@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="theme-color" content="#05070A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Banco de Dados — A Tecnologia que Organiza o Mundo Digital</title>
+<meta name="description" content="Uma jornada técnica por Banco de Dados, SGBDs, SQL, Vetorização e Inteligência Artificial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js" defer></script>
+<style>
+:root{
+  --bg:#05070A;--bg-1:#0A0C11;--bg-2:#0F1116;
+  --glass:rgba(255,255,255,0.045);--glass-strong:rgba(255,255,255,0.09);
+  --surface:rgba(255,255,255,0.035);--surface-hover:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.17);
+  --blue:#5B8CFF;--cyan:#38D9C9;--purple:#8B7CF6;
+  --text:#F5F6F8;--text-dim:#9AA1B2;--text-dimmer:#5C6377;
+  --mono:'JetBrains Mono',monospace;--display:'Manrope',sans-serif;--body:'Inter',sans-serif;
+  --grad-1:linear-gradient(120deg,var(--blue),var(--purple));
+  --grad-2:linear-gradient(120deg,var(--cyan),var(--blue));
+  --radius:22px;--ease:cubic-bezier(.19,1,.22,1);
+  --blur:blur(28px) saturate(180%);--blur-light:blur(12px) saturate(140%);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;}
+::selection{background:var(--purple);color:#fff;}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px;}
+.icon{width:1em;height:1em;stroke-width:1.75;vertical-align:-0.15em;}
+
+/* Backgrounds */
+.bg-grid{position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 40%,transparent 90%);mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 40%,transparent 90%);
+}
+.bg-noise{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.bg-spotlight{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(600px circle at var(--sx,50%) var(--sy,20%),rgba(91,140,255,.06),transparent 60%);transition:background .1s linear;
+}
+.ambient{position:fixed;inset:0;z-index:-4;overflow:hidden;pointer-events:none;}
+.ambient span{position:absolute;border-radius:50%;filter:blur(100px);opacity:.3;will-change:transform;}
+.ambient span:nth-child(1){width:46vw;height:46vw;background:radial-gradient(circle,var(--blue),transparent 70%);top:-14%;left:-8%;animation:drift1 34s ease-in-out infinite;}
+.ambient span:nth-child(2){width:38vw;height:38vw;background:radial-gradient(circle,var(--purple),transparent 70%);top:32%;right:-10%;animation:drift2 40s ease-in-out infinite;}
+.ambient span:nth-child(3){width:34vw;height:34vw;background:radial-gradient(circle,var(--cyan),transparent 70%);bottom:-12%;left:20%;animation:drift3 46s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(6vw,8vh) scale(1.15);}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-7vw,-6vh) scale(1.1);}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(5vw,-9vh) scale(1.08);}}
+@media(max-width:700px){.ambient span{filter:blur(60px);opacity:.2;}.bg-grid{background-size:40px 40px;}}
+
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;font-weight:500;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--cyan);}
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;letter-spacing:-0.02em;line-height:1.25;}
+.section{padding:100px 24px;max-width:1240px;margin:0 auto;position:relative;}
+.section-head{max-width:680px;margin-bottom:48px;}
+.section-head h2{font-size:clamp(1.8rem,3.5vw,2.6rem);margin-bottom:14px;line-height:1.12;}
+.section-head p{color:var(--text-dim);font-size:1rem;}
+.gradient-text{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;padding:0.06em 0.02em;margin:-0.06em -0.02em;line-height:1.25;}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-stagger.visible > *{opacity:1;transform:translateY(0);}
+.reveal-stagger > *{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.reveal-stagger.visible > *:nth-child(1){transition-delay:.03s;}
+.reveal-stagger.visible > *:nth-child(2){transition-delay:.08s;}
+.reveal-stagger.visible > *:nth-child(3){transition-delay:.13s;}
+.reveal-stagger.visible > *:nth-child(4){transition-delay:.18s;}
+.reveal-stagger.visible > *:nth-child(5){transition-delay:.23s;}
+
+/* NAV */
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:12px 20px;width:min(1180px,92vw);border-radius:999px;background:rgba(255,255,255,0.045);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(255,255,255,0.09);box-shadow:0 8px 32px -12px rgba(0,0,0,.5);transition:all .5s var(--ease);}
+nav.scrolled{top:8px;padding:10px 18px;background:rgba(255,255,255,0.065);box-shadow:0 12px 40px -10px rgba(0,0,0,.6);}
+@media(max-width:980px){nav{width:94vw;left:50%;border-radius:22px;}}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:1.02rem;}
+.nav-logo .mark{width:30px;height:30px;border-radius:9px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;color:#fff;position:relative;}
+.nav-logo .mark::after{content:'';position:absolute;inset:-6px;border-radius:13px;background:var(--grad-1);opacity:.25;filter:blur(8px);z-index:-1;}
+.nav-links{display:flex;gap:2px;list-style:none;position:relative;}
+.nav-links a{font-size:.85rem;padding:9px 15px;border-radius:999px;color:var(--text-dim);transition:color .25s;font-weight:500;position:relative;display:inline-block;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a.active{color:var(--text);}
+.nav-pill{position:absolute;top:0;height:100%;background:var(--surface-hover);border:1px solid var(--border);border-radius:999px;transition:all .4s var(--ease);z-index:-1;}
+.nav-cta{display:flex;align-items:center;gap:14px;}
+.nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:6px;}
+.nav-badge-desktop{display:inline-flex;}
+@media(max-width:760px){.nav-badge-desktop{display:none;}}
+@media(max-width:980px){
+  .nav-links{position:fixed;top:76px;left:3vw;right:3vw;width:94vw;flex-direction:column;background:rgba(18,20,29,0.85);backdrop-filter:var(--blur);border:1px solid var(--border-strong);border-radius:20px;padding:10px;display:none;gap:2px;max-height:70vh;overflow-y:auto;box-shadow:0 20px 50px -12px rgba(0,0,0,.6);}
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:13px 16px;}
+  .nav-pill{display:none;}
+  .nav-toggle{display:block;}
+}
+
+/* BUTTONS */
+.btn{padding:15px 28px;border-radius:999px;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid transparent;transition:transform .4s var(--ease),box-shadow .4s var(--ease),background .4s;display:inline-flex;align-items:center;gap:9px;position:relative;overflow:hidden;isolation:isolate;font-family:var(--body);}
+.btn .icon{width:16px;height:16px;}
+.btn::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.25),transparent 60%);opacity:0;transition:opacity .3s;z-index:-1;}
+.btn:hover::before{opacity:1;}
+  .btn-primary{background:var(--grad-1);color:#fff;box-shadow:0 4px 24px -6px rgba(91,140,255,.35);}
+  .btn-primary:hover{box-shadow:0 14px 40px -8px rgba(91,140,255,.6);transform:translateY(-3px);filter:brightness(1.1);}
+  .btn-ghost{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.14);color:var(--text);backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);}
+  .btn-ghost:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.24);transform:translateY(-3px);box-shadow:0 10px 30px -10px rgba(0,0,0,.4);}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s ease-out;pointer-events:none;}
+@keyframes rip{to{transform:scale(3);opacity:0;}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;padding:150px 24px 60px;overflow:hidden;}
+#hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(91,140,255,.12),transparent 70%);pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:960px;transition:transform .1s linear;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid var(--border-strong);font-size:.78rem;color:var(--text-dim);margin-bottom:30px;backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hero h1{font-size:clamp(2.5rem,6.2vw,4.8rem);line-height:1.18;margin-bottom:28px;font-weight:700;letter-spacing:-0.03em;}
+.hero p.sub{color:var(--text-dim);font-size:clamp(1rem,1.5vw,1.25rem);max-width:640px;margin:0 auto 46px;font-weight:400;}
+.btn-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:88px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:860px;margin:0 auto;}
+  .stat{background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--border);border-radius:var(--radius);padding:30px 16px;text-align:center;transition:transform .4s var(--ease),border-color .4s,box-shadow .4s;backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);box-shadow:0 4px 20px -8px rgba(0,0,0,.3);}
+  .stat:hover{transform:translateY(-6px);border-color:var(--border-strong);box-shadow:0 24px 48px -20px rgba(0,0,0,.5),0 0 30px -10px rgba(91,140,255,.3);}
+.stat .num{font-family:var(--display);font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;background:var(--grad-2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.stat .label{color:var(--text-dimmer);font-size:.78rem;margin-top:8px;}
+@media(max-width:700px){.stats-row{grid-template-columns:1fr;}}
+.scroll-indicator{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-dimmer);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;z-index:2;font-family:var(--mono);}
+.scroll-indicator .line{width:1px;height:34px;background:linear-gradient(var(--text-dimmer),transparent);position:relative;overflow:hidden;}
+.scroll-indicator .line::after{content:'';position:absolute;top:-34px;left:0;width:100%;height:34px;background:linear-gradient(var(--cyan),transparent);animation:scrollLine 2s infinite;}
+@keyframes scrollLine{to{top:34px;}}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:34px;margin-top:44px;}
+.timeline::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--blue),var(--purple));}
+.tl-item{position:relative;padding-bottom:38px;padding-left:26px;}
+.tl-item::before{content:'';position:absolute;left:-34px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--cyan);box-shadow:0 0 0 0 rgba(56,217,201,.4);transition:box-shadow .3s;}
+.tl-item:hover::before{box-shadow:0 0 0 6px rgba(56,217,201,.15);}
+.tl-item h4{font-family:var(--mono);color:var(--cyan);font-size:.86rem;margin-bottom:7px;font-weight:500;}
+.tl-item p{color:var(--text-dim);font-size:.95rem;}
+
+/* CARDS */
+  .card{background:linear-gradient(160deg,rgba(255,255,255,0.055),rgba(255,255,255,0.02));border:1px solid var(--border);border-radius:var(--radius);padding:32px;transition:border-color .4s,box-shadow .5s var(--ease),transform .4s var(--ease);position:relative;overflow:hidden;backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);isolation:isolate;box-shadow:0 4px 20px -8px rgba(0,0,0,.3);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);opacity:.5;}
+.card::after{content:'';position:absolute;inset:0;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.08),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:1;}
+  .card:hover{border-color:var(--border-strong);box-shadow:0 30px 60px -24px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset,0 20px 40px -20px rgba(91,140,255,.2);transform:translateY(-4px);}
+.card:hover::after{opacity:1;}
+.card-icon{width:46px;height:46px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.card-icon .icon{width:20px;height:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr;}.grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .section{padding:88px 16px;}.section-head{margin-bottom:44px;}
+  .hero{padding:120px 16px 50px;}.btn-row{margin-bottom:56px;flex-direction:column;align-items:stretch;}
+  .btn{padding:14px 20px;font-size:.85rem;width:100%;justify-content:center;min-height:48px;}
+  .card{padding:20px;}.sgbd-panel.card{padding:20px!important;}
+  .sgbd-header{gap:14px;}.meta-grid{grid-template-columns:1fr;gap:10px;}
+  .flow-node{min-width:0;width:100%;font-size:.82rem;padding:14px 18px;}
+  nav{padding:12px 14px;}nav.scrolled{padding:10px 14px;}.nav-logo{font-size:.85rem;}
+  .hero h1{font-size:clamp(2rem,8vw,3rem);}
+  .hero p.sub{font-size:1rem;}
+  .stats-row-4{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .bento-grid{gap:10px;}
+  .bento-card{min-height:auto;}
+  .sgbd-tabs{gap:6px;}
+  .sgbd-tab{padding:10px 14px;font-size:.82rem;}
+  .sql-tabs{gap:4px;}
+  .sql-tab{padding:8px 12px;font-size:.78rem;}
+  .quiz-option{padding:14px 16px;font-size:.9rem;min-height:52px;}
+  .accordion-head{padding:16px 18px;font-size:.95rem;}
+  .accordion-item.open .accordion-body{padding:0 18px 18px 18px;}
+  .logo-grid{grid-template-columns:repeat(2,1fr);}
+  .adv-disadv{gap:16px;}
+  .adv-disadv .col{padding:16px;}
+  .mini-dash{flex-direction:column;gap:10px;}
+  .mini-dash-donut{width:100%;max-width:200px;margin:0 auto;}
+  table.res{font-size:.8rem;}
+  table.res th,table.res td{padding:6px 8px;}
+  .scroll-indicator{bottom:20px;font-size:.65rem;}
+  .back-top{bottom:20px;right:20px;width:44px;height:44px;}
+}
+
+@media(max-width:400px){
+  .section{padding:70px 12px;}
+  .hero{padding:100px 12px 40px;}
+  .card{padding:16px;}
+  .sgbd-panel.card{padding:16px!important;}
+  .btn{padding:12px 16px;font-size:.82rem;}
+  .nav-links a{padding:12px 14px;font-size:.9rem;}
+  .stats-row-4{grid-template-columns:1fr;}
+  .logo-grid{grid-template-columns:1fr;}
+  .bento-num{font-size:.68rem;}
+  .bento-card h4{font-size:1rem;}
+}
+
+@media(min-width:1400px){
+  .section{max-width:1400px;}
+  .hero-inner{max-width:1400px;}
+  nav{width:min(1400px,92vw);}
+}
+
+/* Melhorias de acessibilidade e touch */
+@media(hover:none) and (pointer:coarse){
+  .btn{min-height:48px;padding:14px 24px;}
+  .nav-links a{padding:12px 16px;min-height:44px;}
+  .sgbd-tab{min-height:44px;padding:12px 16px;}
+  .sql-tab{min-height:40px;padding:10px 14px;}
+  .quiz-option{min-height:52px;}
+  .accordion-head{min-height:48px;}
+  .feature-pill{min-height:40px;padding:10px 16px;}
+  .bento-link{min-height:44px;padding:8px 0;}
+}
+
+/* Melhorias para landscape em mobile */
+@media(max-height:600px) and (orientation:landscape){
+  .hero{min-height:100vh;padding:100px 20px 40px;}
+  .hero h1{margin-bottom:16px;}
+  .hero p.sub{margin-bottom:24px;}
+  .btn-row{margin-bottom:40px;}
+  .scroll-indicator{display:none;}
+}
+
+/* Impressão */
+@media print{
+  .bg-grid,.bg-noise,.bg-spotlight,.ambient{display:none;}
+  nav{position:static;background:#fff;color:#000;}
+  .hero{min-height:auto;padding:40px 0;}
+  .card{break-inside:avoid;border:1px solid #ccc;}
+  .btn{display:none;}
+}
+
+/* Melhorias de performance e compatibilidade */
+@media(max-width:768px){
+  .hero-content{will-change:transform;}
+  .card{will-change:transform,box-shadow;}
+  .db-card{animation:none;}
+  .db-stack{animation:none;}
+  .db-ring{animation:none;}
+  .bento-illustration .cube{animation:none;}
+  .diamond-stack span{animation:none;}
+}
+
+/* Melhorias de legibilidade mobile */
+@media(max-width:600px){
+  body{line-height:1.7;font-size:16px;}
+  h1{font-size:clamp(1.8rem,7vw,2.5rem);}
+  h2{font-size:clamp(1.5rem,6vw,2rem);}
+  h3{font-size:clamp(1.2rem,5vw,1.5rem);}
+  p{font-size:1rem;line-height:1.7;}
+  .section-head p{font-size:.95rem;}
+  .card p{font-size:.92rem;}
+  .timeline{padding-left:28px;}
+  .tl-item{padding-left:20px;}
+  .tl-item::before{left:-28px;width:11px;height:11px;}
+  .eyebrow{font-size:.68rem;}
+  .stat .label{font-size:.75rem;}
+}
+
+/* Otimizações para telas muito pequenas */
+@media(max-width:360px){
+  .section{padding:60px 10px;}
+  .hero{padding:90px 10px 30px;}
+  .card{padding:14px;}
+  .btn{padding:12px 16px;font-size:.82rem;}
+  .nav-logo{font-size:.8rem;}
+  .nav-logo .mark{width:26px;height:26px;}
+  .hero-badge{font-size:.7rem;padding:6px 12px;}
+  .bento-num{font-size:.65rem;}
+  .bento-card h4{font-size:.95rem;}
+}
+
+/* Melhorias para telas grandes */
+@media(min-width:1600px){
+  .section{max-width:1500px;}
+  .hero-inner{max-width:1500px;}
+  nav{width:min(1500px,92vw);}
+  .hero h1{font-size:clamp(3rem,5vw,5rem);}
+}
+
+/* Smooth scrolling para iOS */
+@supports (-webkit-touch-callout: none) {
+  html{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+  .nav-links{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+}
+
+/* Melhorias de contraste e acessibilidade */
+@media(prefers-contrast: high) {
+  .card{border:2px solid var(--border-strong);}
+  .btn{border:2px solid currentColor;}
+  .nav-links a{border:1px solid transparent;}
+  .nav-links a:hover{border-color:var(--text);}
+}
+
+/* Modo escuro/claro automático */
+@media(prefers-color-scheme: light) {
+  /* Mantém o tema escuro atual, mas prepara para futura adaptação */
+}
+
+/* Animações reduzidas */
+@media(prefers-reduced-motion: reduce) {
+  *{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;}
+  .reveal{opacity:1;transform:none;}
+  .reveal-stagger > *{opacity:1;transform:none;}
+}
+
+/* Safe areas para dispositivos com notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  nav{top:env(safe-area-inset-top,14px);padding-top:max(12px,env(safe-area-inset-top));}
+  .hero{padding-top:max(150px,calc(env(safe-area-inset-top) + 100px));}
+  .back-top{bottom:max(28px,env(safe-area-inset-bottom));right:max(28px,env(safe-area-inset-right));}
+}
+
+/* Melhorias de foco para acessibilidade */
+*:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px;}
+.btn:focus-visible{outline-offset:4px;}
+.nav-links a:focus-visible{outline-offset:2px;}
+.quiz-option:focus-visible{outline-offset:2px;}
+
+/* Seleção de texto personalizada */
+::selection{background:var(--purple);color:#fff;}
+::-moz-selection{background:var(--purple);color:#fff;}
+
+/* Scrollbar personalizada para Webkit */
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg-1);}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:5px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-dimmer);}
+
+/* Firefox scrollbar */
+*{scrollbar-width:thin;scrollbar-color:var(--border-strong) var(--bg-1);}
+
+/* HERO SPLIT */
+.hero-split{min-height:96vh;display:block;text-align:left;padding:150px 24px 40px;}
+.hero-inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;}
+.hero-text{max-width:560px;}
+.hero-text h1{display:flex;flex-direction:column;font-size:clamp(2.8rem,6.8vw,5.6rem);}
+@keyframes breathe{0%,100%{box-shadow:0 4px 24px -6px rgba(91,140,255,.35);}50%{box-shadow:0 4px 38px -4px rgba(91,140,255,.65);}}
+.btn-breathe{animation:breathe 3.2s ease-in-out infinite;}
+.hero-feature-pills{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 34px;}
+.feature-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:.78rem;color:var(--text-dim);transition:all .3s var(--ease);}
+.feature-pill:hover{background:rgba(255,255,255,.08);border-color:var(--border-strong);color:var(--text);transform:translateY(-2px);}
+.feature-pill .icon{width:13px;height:13px;color:var(--cyan);}
+@media(max-width:980px){.hero-feature-pills{justify-content:center;}}
+.stats-row-4{grid-template-columns:repeat(4,1fr);max-width:520px;margin:0;}
+.stat .num-static{font-family:var(--display);font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;background:var(--grad-2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.db-illustration{position:relative;height:520px;display:flex;align-items:center;justify-content:center;}
+.db-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.db-lines path{fill:none;stroke:url(#lineGrad);stroke-width:1.4;opacity:.45;stroke-dasharray:4 5;animation:dashMove 3.5s linear infinite;}
+@keyframes dashMove{to{stroke-dashoffset:-90;}}
+.db-hub{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center;}
+.db-ring{position:absolute;border-radius:50%;border:1px solid rgba(91,140,255,.25);animation:ringPulse 4s ease-in-out infinite;}
+.db-ring.r1{width:100%;height:100%;}
+.db-ring.r2{width:140%;height:140%;animation-delay:1s;border-color:rgba(139,124,246,.2);}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.5;}50%{transform:scale(1.06);opacity:.9;}}
+.db-stack{position:relative;width:96px;height:96px;transform-style:preserve-3d;animation:hubFloat 5s ease-in-out infinite;}
+.db-stack span{position:absolute;left:0;width:96px;height:26px;border-radius:50%;background:linear-gradient(135deg,rgba(91,140,255,.5),rgba(139,124,246,.5));border:1px solid rgba(255,255,255,.25);box-shadow:0 0 30px rgba(91,140,255,.35);backdrop-filter:blur(4px);}
+.db-stack span:nth-child(1){top:0;}.db-stack span:nth-child(2){top:20px;}.db-stack span:nth-child(3){top:40px;}.db-stack span:nth-child(4){top:60px;}
+@keyframes hubFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.db-card{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(160deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));border:1px solid var(--border-strong);border-radius:16px;backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);box-shadow:0 20px 40px -18px rgba(0,0,0,.6);animation:cardFloat 6s ease-in-out infinite;min-width:150px;will-change:transform;}
+.db-card:nth-child(odd){animation-delay:.6s;}.db-card:nth-child(3n){animation-delay:1.2s;}
+@keyframes cardFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.db-card-icon{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.db-card-icon .icon{width:17px;height:17px;}
+.db-card strong{display:block;font-family:var(--display);font-size:.86rem;font-weight:700;}
+.db-card small{color:var(--text-dimmer);font-size:.72rem;}
+@media(max-width:980px){.hero-inner{grid-template-columns:1fr;}.db-illustration{display:none;}.hero-text{max-width:100%;text-align:center;margin:0 auto;}.hero-text .btn-row,.stats-row-4{justify-content:center!important;margin-left:auto;margin-right:auto;}}
+
+/* BENTO GRID */
+.bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;grid-auto-rows:1fr;}
+.bento-card{display:flex;flex-direction:column;min-height:260px;}
+.bento-card p{color:var(--text-dim);font-size:.9rem;flex-grow:0;}
+.bento-num{font-family:var(--mono);font-size:.72rem;color:var(--text-dimmer);letter-spacing:.1em;margin-bottom:10px;}
+.bento-card h4{font-size:1.08rem;margin-bottom:10px;}
+.bento-link{margin-top:auto;padding-top:14px;font-size:.85rem;font-weight:600;color:var(--cyan);display:inline-flex;align-items:center;gap:6px;transition:gap .3s;}
+.bento-link:hover{gap:10px;}
+.bento-link .icon{width:14px;height:14px;}
+.bento-wide{grid-column:span 2;}
+@media(max-width:980px){.bento-grid{grid-template-columns:repeat(2,1fr);}.bento-wide{grid-column:span 2;}}
+@media(max-width:640px){.bento-grid{grid-template-columns:1fr;}.bento-wide{grid-column:span 1;}}
+
+.bento-illustration{height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.diamond-stack{position:relative;width:70px;height:70px;}
+.diamond-stack span{position:absolute;inset:0;margin:auto;width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,rgba(91,140,255,.5),rgba(139,124,246,.35));border:1px solid rgba(255,255,255,.2);transform:rotate(45deg);}
+.diamond-stack span:nth-child(1){transform:translateY(-14px) rotate(45deg);opacity:.5;}
+.diamond-stack span:nth-child(2){transform:translateY(-4px) rotate(45deg);opacity:.75;}
+.diamond-stack span:nth-child(3){transform:translateY(6px) rotate(45deg);box-shadow:0 10px 24px -8px rgba(91,140,255,.5);}
+.cube-illustration .cube{position:relative;width:60px;height:60px;transform:rotateX(-24deg) rotateY(35deg);transform-style:preserve-3d;animation:cubeSpin 8s linear infinite;}
+.cube span{position:absolute;width:60px;height:60px;border:1px solid rgba(255,255,255,.25);background:linear-gradient(135deg,rgba(91,140,255,.3),rgba(139,124,246,.2));}
+.cube span:nth-child(1){transform:translateZ(30px);}.cube span:nth-child(2){transform:rotateY(90deg) translateZ(30px);}.cube span:nth-child(3){transform:rotateX(90deg) translateZ(30px);}
+@keyframes cubeSpin{to{transform:rotateX(-24deg) rotateY(395deg);}}
+.brain-illustration{height:64px;}
+.brain-illustration .icon{width:52px;height:52px;color:var(--purple);filter:drop-shadow(0 0 16px rgba(139,124,246,.5));}
+
+.mini-flow{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:6px;}
+.mini-flow > div{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--text-dim);flex:1;}
+.mini-flow .icon{width:16px;height:16px;color:var(--cyan);}
+.mini-flow small{font-size:.68rem;color:var(--text-dimmer);}
+.flow-sep{width:11px!important;height:11px!important;color:var(--text-dimmer)!important;flex-shrink:0;}
+
+.mini-list{list-style:none;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:8px;margin:4px 0;}
+.mini-list li{display:flex;align-items:center;gap:9px;}
+.mini-list .icon{width:14px;height:14px;color:var(--cyan);}
+.mini-list.plain li::before{content:'—';color:var(--text-dimmer);margin-right:2px;}
+
+.mini-code{font-family:var(--mono);font-size:.76rem;background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:12px;padding:14px 16px;line-height:1.7;color:var(--text-dim);margin:6px 0;}
+.mini-ide{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:6px 0;}
+.mini-ide-code{font-family:var(--mono);font-size:.76rem;color:var(--text-dim);line-height:1.7;}
+
+.mini-dash{display:flex;gap:14px;align-items:center;margin:8px 0;}
+.mini-dash-stat{flex:1;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.mini-dash-stat small{color:var(--text-dimmer);font-size:.7rem;}
+.mini-dash-stat strong{display:block;font-family:var(--display);font-size:1.3rem;margin:2px 0 4px;}
+.mini-dash-donut{position:relative;width:70px;height:70px;flex-shrink:0;}
+.donut-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:.85rem;}
+.donut-label small{font-family:var(--body);font-weight:400;font-size:.6rem;color:var(--text-dimmer);}
+
+.logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;}
+.logo-badge{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;font-family:var(--display);font-weight:700;font-size:.82rem;color:var(--text);}
+
+/* QUIZ */
+.quiz-shell{max-width:720px;margin:0 auto;}
+.quiz-progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:.85rem;color:var(--text-dim);}
+.quiz-xp{display:flex;align-items:center;gap:6px;color:var(--cyan);font-weight:600;}
+.quiz-bar-track{height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:32px;}
+.quiz-bar-fill{height:100%;background:var(--grad-1);border-radius:999px;width:0;transition:width .5s var(--ease);}
+.quiz-option{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.03);cursor:pointer;margin-bottom:12px;transition:all .25s;font-size:.95rem;position:relative;}
+.quiz-option:hover{border-color:var(--border-strong);background:rgba(255,255,255,.06);}
+.quiz-option.locked{cursor:default;}
+.quiz-option.locked:not(.correct):not(.wrong):hover{background:rgba(255,255,255,.03);border-color:var(--border);}
+.quiz-option.correct{border-color:#4ade80;background:rgba(74,222,128,.1);}
+.quiz-option.wrong{border-color:#f87171;background:rgba(248,113,113,.1);}
+.quiz-option .letter{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.8rem;flex-shrink:0;}
+.quiz-mark{display:none;margin-left:auto;width:18px;height:18px;flex-shrink:0;}
+.quiz-mark-correct{color:#4ade80;}.quiz-mark-wrong{color:#f87171;}
+.quiz-option.correct .quiz-mark-correct{display:block;}.quiz-option.wrong .quiz-mark-wrong{display:block;}
+.quiz-explain{display:flex;gap:14px;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);margin:18px 0;animation:fadeSlideIn .35s var(--ease);}
+.quiz-explain.is-correct{border-color:rgba(74,222,128,.35);}.quiz-explain.is-wrong{border-color:rgba(248,113,113,.35);}
+.quiz-explain .icon{width:20px;height:20px;flex-shrink:0;margin-top:2px;color:var(--cyan);}
+.quiz-explain.is-correct .icon{color:#4ade80;}.quiz-explain.is-wrong .icon{color:#f87171;}
+.quiz-explain p{color:var(--text-dim);font-size:.86rem;margin-top:4px;}
+.quiz-actions{display:flex;justify-content:flex-end;}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result .score{font-family:var(--display);font-size:3rem;font-weight:800;background:var(--grad-1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:52px 0;}
+.flow-node{background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;padding:16px 26px;font-family:var(--mono);font-size:.87rem;text-align:center;min-width:210px;display:flex;align-items:center;gap:10px;justify-content:center;transition:.3s;backdrop-filter:blur(6px);}
+.flow-node:hover{border-color:var(--cyan);background:var(--surface-hover);}
+.flow-node.hl{border-color:var(--cyan);box-shadow:0 0 24px -6px rgba(56,217,201,.45);}
+.flow-node .icon{width:16px;height:16px;color:var(--cyan);}
+.flow-arrow{color:var(--text-dimmer);display:flex;align-items:center;padding:4px 0;}
+.flow-arrow .icon{width:18px;height:18px;}
+@media(min-width:760px){.flow.horizontal{flex-direction:row;flex-wrap:wrap;justify-content:center;}.flow.horizontal .flow-arrow .icon{transform:rotate(-90deg);}}
+
+/* SGBD */
+.sgbd-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;}
+.sgbd-tab{padding:11px 18px;border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--text-dim);transition:.3s;display:flex;align-items:center;gap:9px;backdrop-filter:blur(6px);}
+.sgbd-tab .icon{width:16px;height:16px;}
+.sgbd-tab:hover{border-color:var(--border-strong);color:var(--text);}
+.sgbd-tab.active{color:#fff;border-color:transparent;background:var(--grad-1);}
+.sgbd-panel{display:none;}.sgbd-panel.active{display:block;animation:fadeIn .5s var(--ease);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.sgbd-header{display:flex;align-items:center;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.sgbd-icon{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:var(--bg-2);border:1px solid var(--border-strong);}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .badge{font-size:.72rem;padding:4px 10px;border-radius:999px;background:var(--bg-2);border:1px solid var(--border-strong);color:var(--text-dim);font-family:var(--mono);transition:all .3s;cursor:default;}
+  .badge:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px -4px rgba(56,217,201,.4);}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0;}
+.meta-item{background:var(--bg-1);border:1px solid var(--border);border-radius:11px;padding:15px;transition:.3s;}
+.meta-item:hover{border-color:var(--border-strong);}
+.meta-item .k{font-family:var(--mono);font-size:.68rem;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.meta-item .v{font-weight:600;font-size:.9rem;}
+.bar-wrap{margin:11px 0;}.bar-label{display:flex;justify-content:space-between;font-size:.82rem;color:var(--text-dim);margin-bottom:6px;}
+.bar-track{height:6px;background:var(--bg-1);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--grad-2);width:0;transition:width 1.3s var(--ease);}
+.pill-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.pill{font-size:.78rem;padding:6px 13px;border-radius:999px;background:var(--bg-1);border:1px solid var(--border);color:var(--text-dim);transition:.25s;}
+.pill:hover{border-color:var(--cyan);color:var(--text);}
+.adv-disadv{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px;}
+@media(max-width:700px){.adv-disadv{grid-template-columns:1fr;}}
+.adv-disadv .col{background:var(--bg-1);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.adv-disadv .col h5{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+.adv-disadv .col.good h5{color:#4ade80;}.adv-disadv .col.bad h5{color:#f87171;}
+.adv-disadv ul{list-style:none;}.adv-disadv li{font-size:.89rem;color:var(--text-dim);padding-left:22px;position:relative;margin-bottom:11px;}
+.adv-disadv .good li::before{content:'';position:absolute;left:0;top:6px;width:10px;height:10px;background:#4ade80;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;}
+.adv-disadv .bad li::before{content:'';position:absolute;left:0;top:6px;width:10px;height:10px;background:#f87171;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") center/contain no-repeat;}
+
+/* SOURCES */
+.sources{margin-top:34px;padding-top:22px;border-top:1px dashed var(--border-strong);}
+.sources ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.sources a{font-size:.85rem;color:var(--blue);display:inline-flex;align-items:center;gap:7px;transition:.2s;}
+.sources a:hover{color:var(--cyan);}
+.sources a .icon{width:13px;height:13px;}
+
+/* SQL IDE */
+.ide{background:rgba(10,13,20,.72);backdrop-filter:var(--blur-light);-webkit-backdrop-filter:var(--blur-light);border:1px solid var(--border-strong);border-radius:var(--radius);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.7);}
+.ide-top{display:flex;align-items:center;gap:8px;padding:13px 18px;background:#0D111C;border-bottom:1px solid var(--border);}
+.ide-dot{width:11px;height:11px;border-radius:50%;}
+.ide-filename{margin-left:12px;color:var(--text-dimmer);font-family:var(--mono);font-size:.77rem;display:flex;align-items:center;gap:6px;}
+.ide-filename .icon{width:12px;height:12px;}
+.ide-body{display:grid;grid-template-columns:1fr;gap:0;}
+@media(min-width:900px){.ide-body{grid-template-columns:1fr 1fr;}}
+.ide-code{padding:24px;font-family:var(--mono);font-size:.86rem;line-height:1.8;overflow-x:auto;border-right:1px solid var(--border);}
+.ide-result{padding:24px;font-family:var(--mono);font-size:.81rem;background:#070910;}
+.ide-result-label{font-size:.7rem;color:var(--text-dimmer);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.tok-kw{color:#C792EA;}.tok-fn{color:#5B8CFF;}.tok-str{color:#C3E88D;}.tok-com{color:#5C6377;font-style:italic;}.tok-num{color:#38D9C9;}
+table.res{width:100%;border-collapse:collapse;}
+table.res th{text-align:left;color:var(--text-dimmer);font-weight:500;padding:7px 10px;border-bottom:1px solid var(--border-strong);font-size:.72rem;text-transform:uppercase;}
+table.res td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text-dim);}
+.sql-tabs{display:flex;gap:6px;margin-bottom:22px;flex-wrap:wrap;}
+.sql-tab{padding:9px 17px;border-radius:9px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-family:var(--mono);font-size:.81rem;color:var(--text-dim);transition:.25s;}
+.sql-tab:hover{color:var(--text);}
+.sql-tab.active{color:#fff;background:var(--grad-1);border-color:transparent;}
+
+/* VECTOR */
+.vector-canvas-wrap{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius);padding:26px;}
+canvas#vector-space{width:100%;border-radius:12px;}
+
+/* ACCORDION */
+.accordion-item{border:1px solid var(--border);border-radius:13px;margin-bottom:12px;overflow:hidden;background:var(--surface);transition:border-color .3s;}
+.accordion-item.open{border-color:var(--border-strong);}
+.accordion-head{display:flex;justify-content:space-between;align-items:center;padding:19px 22px;cursor:pointer;font-weight:600;gap:16px;}
+.accordion-head .step-num{font-family:var(--mono);color:var(--cyan);font-size:.85rem;min-width:22px;}
+.accordion-head .icon{transition:transform .35s var(--ease);color:var(--cyan);width:18px;height:18px;flex-shrink:0;}
+.accordion-item.open .accordion-head .icon{transform:rotate(45deg);}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .45s var(--ease);padding:0 22px;}
+.accordion-item.open .accordion-body{padding:0 22px 22px 54px;}
+.accordion-body p{color:var(--text-dim);font-size:.93rem;}
+
+/* BIBLIOGRAPHY */
+.biblio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px;}
+.biblio-cat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;}
+.biblio-cat h4{font-size:.92rem;margin-bottom:15px;color:var(--cyan);display:flex;align-items:center;gap:8px;}
+.biblio-cat h4 .icon{width:15px;height:15px;}
+.biblio-cat ul{list-style:none;}.biblio-cat li{margin-bottom:10px;}
+.biblio-cat a{font-size:.84rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;transition:.2s;}
+.biblio-cat a:hover{color:var(--text);}
+.biblio-cat a .icon{width:11px;height:11px;color:var(--text-dimmer);flex-shrink:0;}
+
+footer{padding:70px 24px 50px;text-align:center;border-top:1px solid var(--border);color:var(--text-dimmer);font-size:.85rem;}
+footer .foot-mark{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;font-family:var(--display);color:var(--text-dim);font-weight:600;}
+footer .foot-mark .mark{width:26px;height:26px;border-radius:8px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;}
+footer .foot-mark .mark .icon{width:14px;height:14px;color:#fff;}
+
+.back-top{position:fixed;bottom:28px;right:28px;width:50px;height:50px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:pointer;opacity:0;pointer-events:none;transform:translateY(10px);transition:.35s var(--ease);z-index:900;}
+.back-top:hover{background:var(--grad-1);border-color:transparent;box-shadow:0 10px 30px -8px rgba(91,140,255,.5);}
+.back-top.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+.back-top .icon{width:18px;height:18px;}
+
+.chart-box{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius);padding:26px;}
+
+blockquote.curio{border-left:2px solid var(--purple);padding:18px 22px;background:var(--surface);border-radius:0 14px 14px 0;font-size:.95rem;color:var(--text-dim);margin:28px 0;display:flex;gap:14px;align-items:flex-start;}
+blockquote.curio .icon{width:18px;height:18px;color:var(--purple);flex-shrink:0;margin-top:2px;}
+blockquote.curio strong{color:var(--text);}
+
+.section-divider{text-align:center;color:var(--text-dimmer);font-family:var(--mono);font-size:.85rem;margin-top:60px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.section-divider .icon{width:14px;height:14px;}
+
+#sgbd-conceito, #comparativo, #ia{background:linear-gradient(180deg,transparent,rgba(91,140,255,.025),transparent);}
+#vetorizacao{background:linear-gradient(180deg,transparent,rgba(139,124,246,.03),transparent);}
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-noise" aria-hidden="true"></div>
+<div class="bg-spotlight" id="bgSpotlight" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<nav id="mainNav">
+  <div class="nav-logo"><span class="mark"><i data-lucide="database" class="icon" style="width:16px;height:16px;"></i></span> data.systems</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#inicio" class="active">Início</a></li>
+    <li><a href="#banco-de-dados">Conteúdo</a></li>
+    <li><a href="#sgbds">Tipos de Bancos</a></li>
+    <li><a href="#sql">SQL Editor</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#conclusao">Conclusão</a></li>
+  </ul>
+  <div class="nav-cta">
+    <span class="hero-badge nav-badge-desktop" style="margin:0;padding:6px 14px;font-size:.72rem;"><span class="dot"></span> Guia técnico · 2026</span>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu"><i data-lucide="menu" class="icon"></i></button>
+  </div>
+</nav>
+
+<section class="hero hero-split" id="inicio">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <div class="hero-content hero-text">
+      <div class="hero-badge"><span class="dot"></span> Guia completo · 2026</div>
+      <h1><span>Banco de Dados:</span><span class="gradient-text">a tecnologia que organiza</span><span>o mundo digital.</span></h1>
+      <p class="sub">Sempre que você faz login, envia uma mensagem, compra online ou utiliza um aplicativo, um banco de dados trabalha silenciosamente nos bastidores — armazenando, organizando e entregando informações em milissegundos. Essa é a infraestrutura invisível que sustenta praticamente toda a internet.</p>
+      <div class="btn-row" style="justify-content:flex-start;">
+        <a href="#visao-geral" class="btn btn-primary btn-breathe"><i data-lucide="compass" class="icon"></i> Explorar Conteúdo</a>
+        <a href="#banco-de-dados" class="btn btn-ghost"><i data-lucide="play" class="icon"></i> Assistir Introdução <span style="color:var(--text-dimmer);font-weight:400;">· 1 min</span></a>
+      </div>
+      <div class="hero-feature-pills">
+        <a href="#sql" class="feature-pill"><i data-lucide="terminal" class="icon"></i> Editor SQL</a>
+        <a href="#quiz" class="feature-pill"><i data-lucide="brain-circuit" class="icon"></i> Quiz</a>
+      </div>
+      <div class="stats-row stats-row-4">
+        <div class="stat"><div class="num" data-target="10" data-suffix="+">0</div><div class="label">Tópicos</div></div>
+        <div class="stat"><div class="num" data-target="25" data-suffix="+">0</div><div class="label">Exemplos</div></div>
+        <div class="stat"><div class="num" data-target="100" data-suffix="%">0</div><div class="label">Interativo</div></div>
+        <div class="stat"><div class="num-static">∞</div><div class="label">Conhecimento</div></div>
+      </div>
+    </div>
+
+    <div class="db-illustration" aria-hidden="true">
+      <svg class="db-lines" viewBox="0 0 560 560">
+        <defs><linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5B8CFF"/><stop offset="100%" stop-color="#8B7CF6"/></linearGradient></defs>
+        <path d="M280,280 C220,230 200,190 170,150" /><path d="M280,280 C320,230 350,190 390,140" /><path d="M280,280 C340,280 400,280 450,290" /><path d="M280,280 C230,320 200,350 170,400" /><path d="M280,280 C330,320 370,360 400,410" />
+      </svg>
+      <div class="db-hub">
+        <div class="db-ring r1"></div><div class="db-ring r2"></div>
+        <div class="db-stack"><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="db-card" style="top:6%;left:2%;"><div class="db-card-icon" style="color:#38D9C9;"><i data-lucide="leaf" class="icon"></i></div><div><strong>MongoDB</strong><small>NoSQL · Documentos</small></div></div>
+      <div class="db-card" style="top:0%;right:4%;"><div class="db-card-icon" style="color:#5B8CFF;"><i data-lucide="database" class="icon"></i></div><div><strong>PostgreSQL</strong><small>Relacional · ACID</small></div></div>
+      <div class="db-card" style="top:44%;right:-6%;"><div class="db-card-icon" style="color:#ff5f5f;"><i data-lucide="zap" class="icon"></i></div><div><strong>Redis</strong><small>Cache · Memória</small></div></div>
+      <div class="db-card" style="bottom:14%;left:-4%;"><div class="db-card-icon" style="color:#f7a072;"><i data-lucide="gauge" class="icon"></i></div><div><strong>MySQL</strong><small>Rápido · Confiável</small></div></div>
+      <div class="db-card" style="bottom:0%;right:6%;"><div class="db-card-icon" style="color:#8B7CF6;"><i data-lucide="hard-drive" class="icon"></i></div><div><strong>SQLite</strong><small>Embarcado · Leve</small></div></div>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span>Role para explorar</span><div class="line"></div></div>
+</section>
+
+<section class="section" id="visao-geral" style="padding-top:40px;">
+  <div class="section-head reveal">
+    <div class="eyebrow">Panorama</div>
+    <h2>Um mapa completo em <span class="gradient-text">10 paradas</span></h2>
+    <p>Cada card abaixo abre uma etapa da jornada — do conceito básico até um quiz pra testar o que você aprendeu.</p>
+  </div>
+  <div class="bento-grid reveal-stagger">
+    <div class="card bento-card"><div class="bento-num">01</div><div class="bento-illustration diamond-stack"><span></span><span></span><span></span></div><h4>O que é um Banco de Dados?</h4><p>Um banco de dados é um sistema organizado para armazenar, gerenciar e recuperar informações de forma eficiente, segura e escalável.</p><a href="#banco-de-dados" class="bento-link">Saiba mais <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="bento-num">02</div><h4>Como funciona?</h4><p>Dados são recebidos, processados, armazenados e entregues em milissegundos quando solicitados.</p><div class="mini-flow"><div><i data-lucide="log-in" class="icon"></i><small>Entrada</small></div><i data-lucide="chevron-right" class="icon flow-sep"></i><div><i data-lucide="cpu" class="icon"></i><small>Processo</small></div><i data-lucide="chevron-right" class="icon flow-sep"></i><div><i data-lucide="database" class="icon"></i><small>Armazém</small></div><i data-lucide="chevron-right" class="icon flow-sep"></i><div><i data-lucide="log-out" class="icon"></i><small>Saída</small></div></div></div>
+    <div class="card bento-card"><div class="bento-num">03</div><h4>Tipos de Bancos de Dados</h4><p>Conheça os principais tipos e quando usar cada um deles.</p><ul class="mini-list"><li><i data-lucide="table" class="icon"></i> Relacionais (SQL)</li><li><i data-lucide="braces" class="icon"></i> NoSQL</li><li><i data-lucide="zap" class="icon"></i> Em memória</li><li><i data-lucide="hard-drive" class="icon"></i> Embarcados</li><li><i data-lucide="network" class="icon"></i> Distribuídos</li></ul><a href="#sgbds" class="bento-link">Explorar tipos <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="bento-num">04</div><div class="bento-illustration cube-illustration"><div class="cube"><span></span><span></span><span></span></div></div><h4>Estrutura Interna</h4><p>Entenda como os dados são organizados por dentro:</p><ul class="mini-list plain"><li>Tabelas</li><li>Índices</li><li>Relacionamentos</li><li>Chaves</li></ul><a href="#relacional" class="bento-link">Ver estrutura <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="bento-num">05</div><h4>Linguagem SQL na prática</h4><p>Veja como o SQL interage com o banco de dados através de comandos reais.</p><div class="mini-code"><span class="tok-kw">SELECT</span> nome, email<br><span class="tok-kw">FROM</span> usuarios<br><span class="tok-kw">WHERE</span> ativo = <span class="tok-num">true</span><br><span class="tok-kw">ORDER BY</span> criado_em <span class="tok-kw">DESC</span><br><span class="tok-kw">LIMIT</span> <span class="tok-num">10</span>;</div><a href="#sql" class="bento-link">Abrir editor <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card" style="background:linear-gradient(160deg,rgba(91,140,255,.08),rgba(139,124,246,.04));border:1px solid rgba(91,140,255,.2);"><div class="bento-num">06</div><h4 style="font-size:1.15rem;font-weight:700;margin-bottom:12px;">Visualização de Dados</h4><p style="font-size:.87rem;line-height:1.6;">Transforme dados complexos em insights acionáveis com visualizações interativas e inteligentes.</p><div class="mini-dash" style="margin-top:16px;"><div class="mini-dash-stat" style="flex:1.3;background:rgba(0,0,0,.3);border:1px solid rgba(91,140,255,.2);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><small style="color:var(--text-dimmer);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;">Consultas/dia</small><span style="font-size:.7rem;color:#4ade80;font-family:var(--mono);font-weight:600;">↑ 12.5%</span></div><strong style="font-size:1.8rem;font-weight:800;background:var(--grad-2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px;">2.4K</strong><canvas id="sparkline" height="38" style="width:100%;"></canvas></div><div class="mini-dash-donut" style="position:relative;"><canvas id="donutMini" width="80" height="80" style="width:80px;height:80px;"></canvas><div class="donut-label" style="font-size:1.05rem;"><span style="font-size:1.5rem;font-weight:800;color:#4ade80;display:block;">94%</span><small style="color:var(--text-dimmer);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;">Uptime</small></div></div></div><div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(91,140,255,.15);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:.72rem;color:var(--text-dimmer);font-family:var(--mono);letter-spacing:.08em;font-weight:500;">PERFORMANCE SCORE</span><div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:999px;"><span style="width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px #4ade80;animation:pulse 2s infinite;"></span><span style="font-size:.82rem;font-weight:700;color:#4ade80;">Excellent</span></div></div><a href="#comparativo" class="bento-link" style="margin-top:16px;font-weight:600;">Explorar análises <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="bento-num">07</div><h4>Editor SQL Interativo</h4><p>Teste comandos SQL direto no navegador com resultados em tempo real.</p><div class="mini-ide"><div class="mini-ide-code">SELECT * FROM vendas<br>WHERE data >= '2026-01-01'<br>ORDER BY total DESC;</div></div><a href="#sql" class="bento-link">Abrir editor <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="bento-num">08</div><h4>Casos Reais</h4><p>Empresas que utilizam bancos de dados para mover o mundo.</p><div class="logo-grid"><span class="logo-badge">Uber</span><span class="logo-badge" style="color:#e50914;">Netflix</span><span class="logo-badge" style="color:#ff6b35;">iFood</span><span class="logo-badge" style="background:var(--grad-3,linear-gradient(135deg,#8B7CF6,#ec4899));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Instagram</span><span class="logo-badge" style="color:#ff9900;">Amazon</span><span class="logo-badge" style="color:#1DB954;">Spotify</span></div></div>
+    <div class="card bento-card"><div class="bento-num">09</div><h4>Quiz Interativo</h4><p>Teste seus conhecimentos e ganhe XP!</p><div class="mini-flow" style="margin-bottom:6px;"><div><strong style="font-family:var(--display);">12</strong><small>Questões</small></div><div><strong style="font-family:var(--display);">3</strong><small>Níveis</small></div><div><strong style="font-family:var(--display);">XP</strong><small>Recompensas</small></div></div><div class="bento-illustration brain-illustration"><i data-lucide="brain-circuit" class="icon"></i></div><a href="#quiz" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px;">Começar Quiz <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card bento-wide"><div class="bento-num">10</div><h4>Conclusão</h4><p>Bancos de dados são a espinha dorsal da era digital. Com eles, transformamos dados em informação, informação em decisões e decisões em impacto real.</p><p class="gradient-text" style="font-weight:700;font-size:1.15rem;">Dados são o novo petróleo. E quem sabe organizá-los, lidera o futuro.</p><a href="#conclusao" class="bento-link">Ler conclusão <i data-lucide="arrow-right" class="icon"></i></a></div>
+    <div class="card bento-card"><div class="nav-logo" style="margin-bottom:14px;"><span class="mark"><i data-lucide="database" class="icon" style="width:16px;height:16px;"></i></span> data.systems</div><p style="color:var(--text-dim);font-size:.88rem;">Guia técnico completo sobre Banco de Dados, SGBDs, SQL, Vetorização e Inteligência Artificial.</p><p style="color:var(--text-dimmer);font-size:.8rem;margin-top:14px;">Material educacional · 2026</p></div>
+  </div>
+</section>
+
+<section class="section" id="banco-de-dados">
+  <div class="section-head reveal">
+    <div class="eyebrow">Fundamentos</div>
+    <h2>O que é, afinal, um <span class="gradient-text">Banco de Dados</span>?</h2>
+    <p>Um banco de dados é o núcleo responsável por armazenar, organizar e disponibilizar informações com rapidez, segurança e confiabilidade — tornando possível o funcionamento de aplicações modernas. Pense nele como a memória estrutural de qualquer produto digital: invisível, mas indispensável.</p>
+  </div>
+  <div class="grid-3 reveal-stagger">
+    <div class="card"><div class="card-icon"><i data-lucide="building-2" class="icon" style="color:var(--blue);"></i></div><h4 style="margin-bottom:8px;">Empresas</h4><p style="color:var(--text-dim);font-size:.92rem;">Bancos guardam catálogos de produtos, estoque, transações financeiras e histórico de clientes em tempo real.</p></div>
+    <div class="card"><div class="card-icon"><i data-lucide="smartphone" class="icon" style="color:var(--cyan);"></i></div><h4 style="margin-bottom:8px;">Aplicativos</h4><p style="color:var(--text-dim);font-size:.92rem;">Toda mensagem, curtida, foto ou localização que você envia é lida e escrita em um banco de dados.</p></div>
+    <div class="card"><div class="card-icon"><i data-lucide="landmark" class="icon" style="color:var(--purple);"></i></div><h4 style="margin-bottom:8px;">Governos</h4><p style="color:var(--text-dim);font-size:.92rem;">CPFs, processos judiciais, registros civis e votos são armazenados em bancos com altíssima exigência de integridade.</p></div>
+  </div>
+  <div style="margin-top:88px;" class="reveal">
+    <h3 style="font-size:1.5rem;margin-bottom:8px;">Uma linha do tempo resumida</h3>
+    <p style="color:var(--text-dim);margin-bottom:8px;">Do papel aos vetores semânticos: como os dados evoluíram.</p>
+    <div class="timeline">
+      <div class="tl-item"><h4>1960s — Modelo Hierárquico e em Rede</h4><p>Sistemas como o IBM IMS organizavam dados em árvores rígidas, feitos sob medida para cada aplicação — difíceis de mudar e de consultar livremente.</p></div>
+      <div class="tl-item"><h4>1970 — O Modelo Relacional</h4><p>Edgar F. Codd, pesquisador da IBM, publica o artigo que propõe organizar dados em tabelas relacionadas por chaves — a base de tudo que viria depois, incluindo o SQL.</p></div>
+      <div class="tl-item"><h4>1979 — Primeiro SGBD Relacional Comercial</h4><p>A Relational Software Inc. (futura Oracle) lança o primeiro banco relacional comercial baseado em SQL.</p></div>
+      <div class="tl-item"><h4>1995–2009 — Era Open Source e Web</h4><p>MySQL e PostgreSQL se popularizam junto com a explosão da internet e de aplicações web dinâmicas.</p></div>
+      <div class="tl-item"><h4>2009 — Ascensão do NoSQL</h4><p>MongoDB, Cassandra e Redis surgem para lidar com o volume e a velocidade de dados de redes sociais e big data.</p></div>
+      <div class="tl-item"><h4>2020s — Bancos Vetoriais e IA</h4><p>Com a explosão dos LLMs, bancos de dados passam a armazenar vetores (embeddings) para permitir busca por significado, não apenas por texto exato.</p></div>
+    </div>
+  </div>
+  <blockquote class="curio reveal"><i data-lucide="sparkles" class="icon"></i><span><strong>Curiosidade:</strong> o termo "banco de dados" (database) só se popularizou nos anos 1960, mas o conceito de organizar informação em registros estruturados remonta a censos e catálogos de bibliotecas de séculos atrás.</span></blockquote>
+  <p class="section-divider reveal"><i data-lucide="arrow-down"></i> Agora que entendemos o papel dos bancos de dados, vamos conhecer os sistemas responsáveis por gerenciá-los.</p>
+</section>
+
+<section class="section" id="sgbd-conceito">
+  <div class="section-head reveal">
+    <div class="eyebrow">Conceito</div>
+    <h2>O que é um <span class="gradient-text">SGBD</span>?</h2>
+    <p>Um Sistema Gerenciador de Banco de Dados (SGBD) é o software que fica entre a aplicação e os dados brutos. Ele não é o banco em si — é o "gerente" que controla como os dados são gravados, lidos, protegidos e organizados.</p>
+  </div>
+  <div class="flow reveal">
+    <div class="flow-node"><i data-lucide="user" class="icon"></i> Usuário</div>
+    <div class="flow-arrow"><i data-lucide="arrow-down" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="app-window" class="icon"></i> Aplicação</div>
+    <div class="flow-arrow"><i data-lucide="arrow-down" class="icon"></i></div>
+    <div class="flow-node hl"><i data-lucide="server-cog" class="icon"></i> SGBD</div>
+    <div class="flow-arrow"><i data-lucide="arrow-down" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="database" class="icon"></i> Banco de Dados</div>
+    <div class="flow-arrow"><i data-lucide="arrow-down" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="circle-check" class="icon"></i> Resultado</div>
+  </div>
+  <div class="grid-2 reveal-stagger" style="margin-top:52px;">
+    <div class="card"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i data-lucide="shield-check" class="icon" style="color:var(--cyan);"></i> Segurança e controle de acesso</h4><p style="color:var(--text-dim);font-size:.92rem;">O SGBD decide quem pode ler, alterar ou apagar cada informação, através de usuários, papéis e permissões granulares.</p></div>
+    <div class="card"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i data-lucide="scale" class="icon" style="color:var(--blue);"></i> Integridade dos dados</h4><p style="color:var(--text-dim);font-size:.92rem;">Garante que regras de negócio (como "um CPF não pode se repetir") sejam sempre respeitadas, mesmo com milhares de operações simultâneas.</p></div>
+    <div class="card"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i data-lucide="gauge" class="icon" style="color:var(--purple);"></i> Desempenho</h4><p style="color:var(--text-dim);font-size:.92rem;">Usa índices, cache e otimizadores de consulta para responder em milissegundos, mesmo em tabelas com bilhões de linhas.</p></div>
+    <div class="card"><h4 style="margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i data-lucide="repeat" class="icon" style="color:var(--cyan);"></i> Concorrência e transações</h4><p style="color:var(--text-dim);font-size:.92rem;">Permite que milhares de pessoas leiam e escrevam ao mesmo tempo sem corromper os dados, através de transações ACID.</p></div>
+  </div>
+</section>
+
+<section class="section" id="sgbds">
+  <div class="section-head reveal">
+    <div class="eyebrow">Os Cinco Grandes</div>
+    <h2>Principais <span class="gradient-text">SGBDs</span> do mercado</h2>
+    <p>Cada um nasceu para resolver um problema diferente — e essa origem explica boa parte de suas características até hoje.</p>
+  </div>
+  <div class="sgbd-tabs reveal" id="sgbdTabs">
+    <div class="sgbd-tab active" data-target="pg"><i data-lucide="database" class="icon"></i> PostgreSQL</div>
+    <div class="sgbd-tab" data-target="my"><i data-lucide="database" class="icon"></i> MySQL</div>
+    <div class="sgbd-tab" data-target="or"><i data-lucide="database" class="icon"></i> Oracle Database</div>
+    <div class="sgbd-tab" data-target="ss"><i data-lucide="server" class="icon"></i> SQL Server</div>
+    <div class="sgbd-tab" data-target="mg"><i data-lucide="leaf" class="icon"></i> MongoDB</div>
+  </div>
+  <div class="sgbd-panel active card" id="pg" style="padding:38px;">
+    <div class="sgbd-header"><div class="sgbd-icon"><i data-lucide="database" style="color:#5B8CFF;width:26px;height:26px;"></i></div><div><h3>PostgreSQL</h3><p style="color:var(--text-dim);font-size:.92rem;">O banco relacional mais avançado do mundo open source</p><div class="badge-row"><span class="badge">Relacional</span><span class="badge">Open Source</span><span class="badge">Extensível</span></div></div></div>
+    <p style="color:var(--text-dim);">Nascido em 1986 na Universidade de Berkeley como sucessor do projeto Ingres, liderado pelo professor Michael Stonebraker, o Postgres foi criado para explorar conceitos avançados de bancos de dados — como tipos de dados customizados e extensibilidade — muito antes de virarem tendência de mercado.</p>
+    <div class="meta-grid"><div class="meta-item"><div class="k">Ano</div><div class="v">1986</div></div><div class="meta-item"><div class="k">Responsável</div><div class="v">PostgreSQL Global Dev. Group</div></div><div class="meta-item"><div class="k">Tipo</div><div class="v">Relacional (Objeto-Relacional)</div></div><div class="meta-item"><div class="k">Licença</div><div class="v">PostgreSQL License (livre)</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Desempenho</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill" data-val="90"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Escalabilidade</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill" data-val="80"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Facilidade de aprendizado</span><span>7/10</span></div><div class="bar-track"><div class="bar-fill" data-val="70"></div></div></div>
+    <p style="margin-top:22px;color:var(--text-dim);">Hoje é a escolha padrão de startups, fintechs e projetos que exigem dados geoespaciais (PostGIS), JSON nativo e até busca vetorial (extensão pgvector) — sem sair do SQL tradicional.</p>
+    <div class="pill-list"><span class="pill">Fintechs</span><span class="pill">Instagram</span><span class="pill">Spotify</span><span class="pill">Reddit</span><span class="pill">Governo (setor público)</span></div>
+    <div class="adv-disadv">
+      <div class="col good"><h5><i data-lucide="thumbs-up" class="icon" style="width:15px;height:15px;"></i> Vantagens</h5><ul><li>Altamente extensível e compatível com o padrão SQL</li><li>Suporte nativo a JSON, arrays e dados geoespaciais</li><li>Comunidade open source ativa e licença permissiva</li><li>Excelente para cargas de trabalho complexas e analíticas</li></ul></div>
+      <div class="col bad"><h5><i data-lucide="thumbs-down" class="icon" style="width:15px;height:15px;"></i> Desvantagens</h5><ul><li>Configuração de performance exige mais conhecimento técnico</li><li>Replicação nativa historicamente mais simples que a de concorrentes pagos</li><li>Menor "market share" corporativo que Oracle/SQL Server</li></ul></div>
+    </div>
+    <blockquote class="curio"><i data-lucide="sparkles" class="icon"></i><span>O nome "Postgres" vem de "Post-Ingres" — literalmente "depois do Ingres", o projeto que o originou.</span></blockquote>
+    <div class="sources"><div class="eyebrow">Fontes utilizadas</div><ul>
+      <li><a href="https://www.postgresql.org/about/" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> postgresql.org/about</a></li>
+      <li><a href="https://www.postgresql.org/docs/current/history.html" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> postgresql.org/docs — History</a></li>
+    </ul></div>
+  </div>
+
+  <div class="sgbd-panel card" id="my" style="padding:38px;">
+    <div class="sgbd-header"><div class="sgbd-icon"><i data-lucide="database" style="color:#00758f;width:26px;height:26px;"></i></div><div><h3>MySQL</h3><p style="color:var(--text-dim);font-size:.92rem;">O banco que popularizou a web dinâmica</p><div class="badge-row"><span class="badge">Relacional</span><span class="badge">Open Source</span><span class="badge">Web</span></div></div></div>
+    <p style="color:var(--text-dim);">Criado em 1995 por Michael Widenius e David Axmark na empresa sueca MySQL AB, o MySQL foi construído com foco em simplicidade e velocidade — virou a base da famosa pilha LAMP (Linux, Apache, MySQL, PHP) que impulsionou a explosão de sites dinâmicos nos anos 2000.</p>
+    <div class="meta-grid"><div class="meta-item"><div class="k">Ano</div><div class="v">1995</div></div><div class="meta-item"><div class="k">Responsável</div><div class="v">Oracle Corporation</div></div><div class="meta-item"><div class="k">Tipo</div><div class="v">Relacional</div></div><div class="meta-item"><div class="k">Licença</div><div class="v">GPL (dual license)</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Desempenho</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill" data-val="80"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Escalabilidade</span><span>7/10</span></div><div class="bar-track"><div class="bar-fill" data-val="70"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Facilidade de aprendizado</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill" data-val="90"></div></div></div>
+    <p style="margin-top:22px;color:var(--text-dim);">Foi adquirido pela Sun Microsystems em 2008 e, na sequência, pela Oracle em 2010 — o que motivou a criação do fork MariaDB pelos criadores originais.</p>
+    <div class="pill-list"><span class="pill">WordPress</span><span class="pill">Facebook (origem)</span><span class="pill">Airbnb</span><span class="pill">Uber (parcial)</span></div>
+    <div class="adv-disadv">
+      <div class="col good"><h5><i data-lucide="thumbs-up" class="icon" style="width:15px;height:15px;"></i> Vantagens</h5><ul><li>Extremamente popular — grande comunidade e documentação</li><li>Fácil de instalar e aprender</li><li>Ótimo desempenho em leitura para aplicações web</li><li>Integração nativa com PHP e frameworks web clássicos</li></ul></div>
+      <div class="col bad"><h5><i data-lucide="thumbs-down" class="icon" style="width:15px;height:15px;"></i> Desvantagens</h5><ul><li>Recursos avançados de SQL historicamente mais limitados que o Postgres</li><li>Sob controle da Oracle, gerando incerteza estratégica em parte da comunidade</li><li>Menos robusto para cargas analíticas complexas</li></ul></div>
+    </div>
+    <div class="sources"><div class="eyebrow">Fontes utilizadas</div><ul>
+      <li><a href="https://www.mysql.com/about/" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> mysql.com/about</a></li>
+      <li><a href="https://dev.mysql.com/doc/refman/8.4/en/history.html" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> dev.mysql.com — History</a></li>
+    </ul></div>
+  </div>
+
+  <div class="sgbd-panel card" id="or" style="padding:38px;">
+    <div class="sgbd-header"><div class="sgbd-icon"><i data-lucide="database" style="color:#f80000;width:26px;height:26px;"></i></div><div><h3>Oracle Database</h3><p style="color:var(--text-dim);font-size:.92rem;">O padrão-ouro dos ambientes corporativos críticos</p><div class="badge-row"><span class="badge">Relacional</span><span class="badge">Enterprise</span><span class="badge">Proprietário</span></div></div></div>
+    <p style="color:var(--text-dim);">Lançado em 1979 pela Relational Software Inc. (mais tarde renomeada Oracle Corporation), fundada por Larry Ellison, Bob Miner e Ed Oates, foi um dos primeiros bancos comerciais a implementar SQL — muito antes da IBM lançar seu próprio produto relacional.</p>
+    <div class="meta-grid"><div class="meta-item"><div class="k">Ano</div><div class="v">1979</div></div><div class="meta-item"><div class="k">Responsável</div><div class="v">Oracle Corporation</div></div><div class="meta-item"><div class="k">Tipo</div><div class="v">Relacional (Multi-modelo)</div></div><div class="meta-item"><div class="k">Licença</div><div class="v">Proprietária</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Desempenho</span><span>10/10</span></div><div class="bar-track"><div class="bar-fill" data-val="100"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Escalabilidade</span><span>10/10</span></div><div class="bar-track"><div class="bar-fill" data-val="100"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Facilidade de aprendizado</span><span>5/10</span></div><div class="bar-track"><div class="bar-fill" data-val="50"></div></div></div>
+    <p style="margin-top:22px;color:var(--text-dim);">Domina setores como bancos, telecomunicações e governos, onde é exigida altíssima disponibilidade (recursos como o RAC — Real Application Clusters) e suporte contratual de nível corporativo.</p>
+    <div class="pill-list"><span class="pill">Bancos centrais</span><span class="pill">Telecom</span><span class="pill">Grandes ERPs</span><span class="pill">Governos</span></div>
+    <div class="adv-disadv">
+      <div class="col good"><h5><i data-lucide="thumbs-up" class="icon" style="width:15px;height:15px;"></i> Vantagens</h5><ul><li>Desempenho e confiabilidade líderes de mercado em larga escala</li><li>Recursos avançados de alta disponibilidade e recuperação</li><li>Suporte corporativo robusto e SLA rigoroso</li></ul></div>
+      <div class="col bad"><h5><i data-lucide="thumbs-down" class="icon" style="width:15px;height:15px;"></i> Desvantagens</h5><ul><li>Custo de licenciamento muito elevado</li><li>Curva de aprendizado íngreme</li><li>Menor flexibilidade para times pequenos e startups</li></ul></div>
+    </div>
+    <div class="sources"><div class="eyebrow">Fontes utilizadas</div><ul>
+      <li><a href="https://www.oracle.com/database/technologies/whatis-oracle-database.html" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> oracle.com — What is Oracle Database</a></li>
+      <li><a href="https://www.oracle.com/corporate/history/" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> oracle.com/corporate/history</a></li>
+    </ul></div>
+  </div>
+
+  <div class="sgbd-panel card" id="ss" style="padding:38px;">
+    <div class="sgbd-header"><div class="sgbd-icon"><i data-lucide="server" style="color:#cc2927;width:26px;height:26px;"></i></div><div><h3>Microsoft SQL Server</h3><p style="color:var(--text-dim);font-size:.92rem;">A força do ecossistema Microsoft</p><div class="badge-row"><span class="badge">Relacional</span><span class="badge">Enterprise</span><span class="badge">Azure</span></div></div></div>
+    <p style="color:var(--text-dim);">Lançado em 1989, fruto de uma parceria inicial entre Microsoft, Sybase e Ashton-Tate, o SQL Server se tornou o banco relacional padrão para empresas que já usam Windows Server, .NET e Azure — integração é o seu maior diferencial.</p>
+    <div class="meta-grid"><div class="meta-item"><div class="k">Ano</div><div class="v">1989</div></div><div class="meta-item"><div class="k">Responsável</div><div class="v">Microsoft</div></div><div class="meta-item"><div class="k">Tipo</div><div class="v">Relacional</div></div><div class="meta-item"><div class="k">Licença</div><div class="v">Proprietária (com edições gratuitas)</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Desempenho</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill" data-val="90"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Escalabilidade</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill" data-val="90"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Facilidade de aprendizado</span><span>7/10</span></div><div class="bar-track"><div class="bar-fill" data-val="70"></div></div></div>
+    <p style="margin-top:22px;color:var(--text-dim);">Ferramentas como o SQL Server Management Studio e integração nativa com Power BI, Excel e Azure tornam-no a escolha natural de empresas já investidas na stack Microsoft.</p>
+    <div class="pill-list"><span class="pill">Empresas .NET</span><span class="pill">Azure</span><span class="pill">Setor financeiro</span><span class="pill">Varejo</span></div>
+    <div class="adv-disadv">
+      <div class="col good"><h5><i data-lucide="thumbs-up" class="icon" style="width:15px;height:15px;"></i> Vantagens</h5><ul><li>Integração perfeita com o ecossistema Microsoft e Power BI</li><li>Ferramentas de administração muito maduras (SSMS)</li><li>Boa relação entre desempenho e facilidade de gestão</li></ul></div>
+      <div class="col bad"><h5><i data-lucide="thumbs-down" class="icon" style="width:15px;height:15px;"></i> Desvantagens</h5><ul><li>Custo de licenciamento significativo em edições Enterprise</li><li>Historicamente mais forte em Windows que em Linux</li><li>Menor flexibilidade fora do ecossistema Microsoft</li></ul></div>
+    </div>
+    <div class="sources"><div class="eyebrow">Fontes utilizadas</div><ul>
+      <li><a href="https://learn.microsoft.com/en-us/sql/sql-server/what-is-sql-server" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> learn.microsoft.com — What is SQL Server</a></li>
+    </ul></div>
+  </div>
+
+  <div class="sgbd-panel card" id="mg" style="padding:38px;">
+    <div class="sgbd-header"><div class="sgbd-icon"><i data-lucide="leaf" style="color:#00ed64;width:26px;height:26px;"></i></div><div><h3>MongoDB</h3><p style="color:var(--text-dim);font-size:.92rem;">A referência do modelo NoSQL orientado a documentos</p><div class="badge-row"><span class="badge">NoSQL</span><span class="badge">Documentos</span><span class="badge">Escalável</span></div></div></div>
+    <p style="color:var(--text-dim);">Lançado em 2009 pela empresa 10gen (renomeada MongoDB Inc.), foi criado para resolver um problema concreto: aplicações modernas, com dados semiestruturados e mutáveis, sofriam para se encaixar em tabelas rígidas. A resposta foi armazenar dados como documentos flexíveis no formato BSON (semelhante ao JSON).</p>
+    <div class="meta-grid"><div class="meta-item"><div class="k">Ano</div><div class="v">2009</div></div><div class="meta-item"><div class="k">Responsável</div><div class="v">MongoDB Inc.</div></div><div class="meta-item"><div class="k">Tipo</div><div class="v">NoSQL (Documentos)</div></div><div class="meta-item"><div class="k">Licença</div><div class="v">SSPL</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Desempenho</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill" data-val="80"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Escalabilidade</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill" data-val="90"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Facilidade de aprendizado</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill" data-val="80"></div></div></div>
+    <p style="margin-top:22px;color:var(--text-dim);">É a escolha natural quando o esquema dos dados muda com frequência ou quando cada "registro" tem um formato diferente — como catálogos de produtos com atributos variáveis ou feeds de conteúdo.</p>
+    <div class="pill-list"><span class="pill">Aplicações mobile</span><span class="pill">IoT</span><span class="pill">Catálogos dinâmicos</span><span class="pill">eBay</span></div>
+    <div class="adv-disadv">
+      <div class="col good"><h5><i data-lucide="thumbs-up" class="icon" style="width:15px;height:15px;"></i> Vantagens</h5><ul><li>Esquema flexível, ideal para dados semiestruturados</li><li>Escalabilidade horizontal nativa (sharding)</li><li>Curva de aprendizado amigável para desenvolvedores JavaScript/JSON</li></ul></div>
+      <div class="col bad"><h5><i data-lucide="thumbs-down" class="icon" style="width:15px;height:15px;"></i> Desvantagens</h5><ul><li>Consistência e integridade exigem mais cuidado do desenvolvedor</li><li>Relacionamentos complexos são menos naturais que em SQL</li><li>Licença SSPL gera debate sobre "abertura" do projeto</li></ul></div>
+    </div>
+    <div class="sources"><div class="eyebrow">Fontes utilizadas</div><ul>
+      <li><a href="https://www.mongodb.com/company" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> mongodb.com/company</a></li>
+      <li><a href="https://www.mongodb.com/resources/basics/databases/nosql-explained" target="_blank" rel="noopener"><i data-lucide="external-link" class="icon"></i> mongodb.com — NoSQL Explained</a></li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="section" id="comparativo">
+  <div class="section-head reveal">
+    <div class="eyebrow">Análise Estratégica</div>
+    <h2>Qual é o <span class="gradient-text">melhor banco</span>?</h2>
+    <p>Resposta curta: não existe. Cada SGBD foi desenhado para um contexto — a "melhor" escolha depende do problema, da escala e do time que vai operar o sistema.</p>
+  </div>
+
+  <!-- Comparativo Rápido -->
+  <div class="reveal" style="margin-bottom:60px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+      <div style="width:48px;height:48px;border-radius:14px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px -8px rgba(91,140,255,.4);">
+        <i data-lucide="trophy" class="icon" style="width:24px;height:24px;color:#fff;"></i>
+      </div>
+      <div>
+        <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:2px;">Comparativo Rápido</h3>
+        <p style="color:var(--text-dimmer);font-size:.85rem;">Principais características dos SGBDs analisados</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+      <!-- PostgreSQL -->
+      <div class="card" style="padding:24px;text-align:center;border:1px solid var(--border-strong);background:linear-gradient(160deg,rgba(91,140,255,.08),rgba(255,255,255,.02));">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--bg-2);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px -6px rgba(91,140,255,.5);">
+          <i data-lucide="database" class="icon" style="width:28px;height:28px;color:var(--blue);"></i>
+        </div>
+        <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:14px;">PostgreSQL</h4>
+        <ul style="list-style:none;text-align:left;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Open Source</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> ACID Completo</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> SQL Padrão</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Alta Confiabilidade</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Extensibilidade</li>
+        </ul>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="font-size:.78rem;padding:6px 14px;border-radius:999px;background:var(--grad-1);color:#fff;font-weight:600;">Melhor Geral</span>
+        </div>
+      </div>
+
+      <!-- MySQL -->
+      <div class="card" style="padding:24px;text-align:center;border:1px solid var(--border);">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--bg-2);border:2px solid #00758f;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px -6px rgba(0,117,143,.4);">
+          <i data-lucide="database" class="icon" style="width:28px;height:28px;color:#00758f;"></i>
+        </div>
+        <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:14px;">MySQL</h4>
+        <ul style="list-style:none;text-align:left;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Muito Popular</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Fácil de Usar</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Boa Performance</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Grande Comunidade</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Custo Baixo</li>
+        </ul>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="font-size:.78rem;padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,#38D9C9,#5B8CFF);color:#fff;font-weight:600;">Mais Popular</span>
+        </div>
+      </div>
+
+      <!-- MongoDB -->
+      <div class="card" style="padding:24px;text-align:center;border:1px solid var(--border);">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--bg-2);border:2px solid #00ed64;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px -6px rgba(0,237,100,.4);">
+          <i data-lucide="leaf" class="icon" style="width:28px;height:28px;color:#00ed64;"></i>
+        </div>
+        <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:14px;">MongoDB</h4>
+        <ul style="list-style:none;text-align:left;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> NoSQL Documental</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Alta Escalabilidade</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Flexibilidade</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Performance</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Horizontal Scale</li>
+        </ul>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="font-size:.78rem;padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,#00ed64,#38D9C9);color:#0B0F19;font-weight:600;">Mais Escalável</span>
+        </div>
+      </div>
+
+      <!-- SQLite -->
+      <div class="card" style="padding:24px;text-align:center;border:1px solid var(--border);">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--bg-2);border:2px solid var(--purple);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px -6px rgba(139,124,246,.4);">
+          <i data-lucide="hard-drive" class="icon" style="width:28px;height:28px;color:var(--purple);"></i>
+        </div>
+        <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:14px;">SQLite</h4>
+        <ul style="list-style:none;text-align:left;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Leve e Simples</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Zero Configuração</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Arquivo Único</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Mobile/Embedded</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Sem Servidor</li>
+        </ul>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="font-size:.78rem;padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,#8B7CF6,#38D9C9);color:#fff;font-weight:600;">Mais Simples</span>
+        </div>
+      </div>
+
+      <!-- SQL Server -->
+      <div class="card" style="padding:24px;text-align:center;border:1px solid var(--border);">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--bg-2);border:2px solid #cc2927;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 24px -6px rgba(204,41,39,.4);">
+          <i data-lucide="server" class="icon" style="width:28px;height:28px;color:#cc2927;"></i>
+        </div>
+        <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:14px;">SQL Server</h4>
+        <ul style="list-style:none;text-align:left;font-size:.85rem;color:var(--text-dim);display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Enterprise Grade</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Ferramentas Microsoft</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Suporte Profissional</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Alta Performance</li>
+          <li style="display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon" style="width:16px;height:16px;color:#4ade80;flex-shrink:0;"></i> Recursos Avançados</li>
+        </ul>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="font-size:.78rem;padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,#cc2927,#f87171);color:#fff;font-weight:600;">Mais Enterprise</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela Comparativa -->
+  <div style="overflow-x:auto;margin-top:52px;" class="reveal">
+    <table style="width:100%;border-collapse:collapse;min-width:640px;">
+      <thead><tr style="border-bottom:1px solid var(--border-strong);">
+        <th style="text-align:left;padding:13px;color:var(--text-dimmer);font-size:.76rem;text-transform:uppercase;">SGBD</th>
+        <th style="text-align:left;padding:13px;color:var(--text-dimmer);font-size:.76rem;text-transform:uppercase;">Melhor para</th>
+        <th style="text-align:left;padding:13px;color:var(--text-dimmer);font-size:.76rem;text-transform:uppercase;">Evitar quando</th>
+      </tr></thead>
+      <tbody style="font-size:.9rem;color:var(--text-dim);">
+        <tr style="border-bottom:1px solid var(--border);"><td style="padding:13px;font-weight:600;color:var(--text);">PostgreSQL</td><td style="padding:13px;">Produtos SaaS, dados geoespaciais, cargas mistas OLTP/analítica</td><td style="padding:13px;">Time sem nenhuma experiência em administração de banco</td></tr>
+        <tr style="border-bottom:1px solid var(--border);"><td style="padding:13px;font-weight:600;color:var(--text);">MySQL</td><td style="padding:13px;">Sites, CMS, aplicações web tradicionais</td><td style="padding:13px;">Consultas analíticas muito complexas</td></tr>
+        <tr style="border-bottom:1px solid var(--border);"><td style="padding:13px;font-weight:600;color:var(--text);">Oracle</td><td style="padding:13px;">Sistemas bancários e críticos de missão</td><td style="padding:13px;">Orçamento limitado ou time enxuto</td></tr>
+        <tr style="border-bottom:1px solid var(--border);"><td style="padding:13px;font-weight:600;color:var(--text);">SQL Server</td><td style="padding:13px;">Empresas já no ecossistema Microsoft/Azure</td><td style="padding:13px;">Infraestrutura 100% Linux/open source</td></tr>
+        <tr><td style="padding:13px;font-weight:600;color:var(--text);">MongoDB</td><td style="padding:13px;">Dados semiestruturados, catálogos dinâmicos</td><td style="padding:13px;">Relacionamentos complexos e transações rígidas</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="sql">
+  <div class="section-head reveal">
+    <div class="eyebrow">Linguagem</div>
+    <h2><span class="gradient-text">SQL</span> na prática</h2>
+    <p>Structured Query Language — a linguagem universal para conversar com bancos relacionais. Veja os comandos mais usados no dia a dia.</p>
+  </div>
+  <div class="sql-tabs reveal" id="sqlTabs">
+    <div class="sql-tab active" data-target="s-select">SELECT</div>
+    <div class="sql-tab" data-target="s-insert">INSERT</div>
+    <div class="sql-tab" data-target="s-update">UPDATE</div>
+    <div class="sql-tab" data-target="s-delete">DELETE</div>
+    <div class="sql-tab" data-target="s-join">JOIN</div>
+    <div class="sql-tab" data-target="s-group">GROUP BY</div>
+    <div class="sql-tab" data-target="s-order">ORDER BY</div>
+  </div>
+  <div class="ide reveal">
+    <div class="ide-top">
+      <span class="ide-dot" style="background:#ff5f57;"></span><span class="ide-dot" style="background:#febc2e;"></span><span class="ide-dot" style="background:#28c840;"></span>
+      <span class="ide-filename"><i data-lucide="file-code" class="icon"></i> consulta.sql</span>
+    </div>
+    <div class="ide-body" id="sqlBody"></div>
+  </div>
+</section>
+
+<section class="section" id="vetorizacao">
+  <div class="section-head reveal">
+    <div class="eyebrow">Fronteira Técnica</div>
+    <h2><span class="gradient-text">Vetorização</span>: quando dados viram números</h2>
+    <p>Para uma IA "entender" significado, o texto precisa virar matemática. É isso que a vetorização faz.</p>
+  </div>
+  <div class="flow reveal horizontal" style="margin-bottom:52px;">
+    <div class="flow-node"><i data-lucide="type" class="icon"></i> Palavras</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="binary" class="icon"></i> Embeddings</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="move-3d" class="icon"></i> Vetores</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="scatter-chart" class="icon"></i> Espaço Vetorial</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node hl"><i data-lucide="git-compare" class="icon"></i> Similaridade</div>
+  </div>
+  <div class="grid-2 reveal-stagger">
+    <div class="card">
+      <h4 style="margin-bottom:10px;">O que é um Embedding?</h4>
+      <p style="color:var(--text-dim);font-size:.92rem;">Um embedding é uma lista de números (um vetor) que representa o significado de um texto, imagem ou som em um espaço matemático multidimensional. Frases com significados parecidos geram vetores próximos entre si.</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-bottom:10px;">Do texto ao vetor</h4>
+      <p style="color:var(--text-dim);font-size:.92rem;">Um modelo de embedding lê a frase <em>"gato correndo no parque"</em> e converte cada pedaço de significado em coordenadas — algo como <span style="font-family:var(--mono);color:var(--cyan);">[0.12, -0.87, 0.34, ...]</span>, geralmente com centenas ou milhares de dimensões.</p>
+    </div>
+  </div>
+  <div class="vector-canvas-wrap reveal" style="margin-top:44px;">
+    <div class="eyebrow">Espaço vetorial semântico (simplificado em 2D)</div>
+    <canvas id="vector-space" height="360"></canvas>
+    <p style="color:var(--text-dimmer);font-size:.82rem;margin-top:12px;">Palavras com significados próximos (ex: "cachorro" e "gato") aparecem mais perto umas das outras. Palavras sem relação (ex: "banco de dados" e "praia") ficam distantes.</p>
+  </div>
+  <div class="grid-3 reveal-stagger" style="margin-top:52px;">
+    <div class="card"><h4 style="margin-bottom:8px;">Distância Euclidiana</h4><p style="color:var(--text-dim);font-size:.88rem;">Mede a distância "em linha reta" entre dois vetores no espaço — quanto menor, mais parecidos.</p></div>
+    <div class="card"><h4 style="margin-bottom:8px;">Similaridade do Cosseno</h4><p style="color:var(--text-dim);font-size:.88rem;">Mede o ângulo entre dois vetores, ignorando magnitude — a métrica mais usada em busca semântica de texto.</p></div>
+    <div class="card"><h4 style="margin-bottom:8px;">KNN vs. ANN</h4><p style="color:var(--text-dim);font-size:.88rem;">KNN busca os vizinhos mais próximos de forma exata; ANN (Approximate Nearest Neighbor) troca um pouco de precisão por muito mais velocidade em bases gigantes.</p></div>
+  </div>
+  <blockquote class="curio reveal"><i data-lucide="lightbulb" class="icon"></i><span><strong>Na prática:</strong> quando você pesquisa "roupa para treinar" numa loja com busca semântica, o banco vetorial não procura essas palavras exatas — ele encontra produtos como "camiseta dry-fit" e "legging esportiva", porque seus vetores estão próximos no espaço semântico.</span></blockquote>
+</section>
+
+<section class="section" id="ia">
+  <div class="section-head reveal">
+    <div class="eyebrow">Convergência</div>
+    <h2>Bancos de Dados e <span class="gradient-text">Inteligência Artificial</span></h2>
+    <p>LLMs (Large Language Models) não "sabem" fatos novos ou privados por padrão — é aí que a busca vetorial entra em cena, através de uma arquitetura chamada RAG.</p>
+  </div>
+  <div class="grid-2 reveal-stagger">
+    <div class="card"><h4 style="margin-bottom:10px;">Como um LLM funciona (resumo)</h4><p style="color:var(--text-dim);font-size:.92rem;">Um LLM é treinado em enormes volumes de texto para prever a próxima palavra mais provável, dado um contexto — é essa capacidade estatística que gera respostas coerentes.</p></div>
+    <div class="card"><h4 style="margin-bottom:10px;">O que é RAG?</h4><p style="color:var(--text-dim);font-size:.92rem;">Retrieval-Augmented Generation: antes de responder, o sistema busca informações relevantes em um banco vetorial e as injeta no contexto do LLM — assim ele "consulta" dados atualizados ou privados em vez de confiar só na memória do treinamento.</p></div>
+  </div>
+  <div class="flow reveal horizontal" style="margin-top:56px;">
+    <div class="flow-node"><i data-lucide="file" class="icon"></i> Documento</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="scissors" class="icon"></i> Chunking</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="binary" class="icon"></i> Embedding</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node hl"><i data-lucide="database-zap" class="icon"></i> Banco Vetorial</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="search" class="icon"></i> Busca Semântica</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="brain-circuit" class="icon"></i> LLM</div>
+    <div class="flow-arrow"><i data-lucide="arrow-right" class="icon"></i></div>
+    <div class="flow-node"><i data-lucide="message-square" class="icon"></i> Resposta</div>
+  </div>
+  <div style="margin-top:60px;" class="reveal">
+    <div class="accordion-item" data-step>
+      <div class="accordion-head"><span class="step-num">01</span><span style="flex:1;">Chunking — dividir o documento</span><i data-lucide="plus" class="icon"></i></div>
+      <div class="accordion-body"><p>Documentos longos são quebrados em pedaços menores (chunks), geralmente de algumas centenas de palavras, para que cada busca traga apenas o trecho relevante — não o documento inteiro.</p></div>
+    </div>
+    <div class="accordion-item" data-step>
+      <div class="accordion-head"><span class="step-num">02</span><span style="flex:1;">Embedding — transformar em vetores</span><i data-lucide="plus" class="icon"></i></div>
+      <div class="accordion-body"><p>Cada chunk passa por um modelo de embedding e vira um vetor numérico, capturando seu significado semântico.</p></div>
+    </div>
+    <div class="accordion-item" data-step>
+      <div class="accordion-head"><span class="step-num">03</span><span style="flex:1;">Armazenamento — banco vetorial</span><i data-lucide="plus" class="icon"></i></div>
+      <div class="accordion-body"><p>Esses vetores são salvos em um banco preparado para busca por similaridade, como o pgvector (extensão do PostgreSQL), Pinecone ou Qdrant.</p></div>
+    </div>
+    <div class="accordion-item" data-step>
+      <div class="accordion-head"><span class="step-num">04</span><span style="flex:1;">Busca semântica — encontrar o que importa</span><i data-lucide="plus" class="icon"></i></div>
+      <div class="accordion-body"><p>Quando o usuário faz uma pergunta, ela também vira um vetor, e o banco encontra os chunks com vetores mais próximos — ou seja, mais relevantes ao significado da pergunta.</p></div>
+    </div>
+    <div class="accordion-item" data-step>
+      <div class="accordion-head"><span class="step-num">05</span><span style="flex:1;">Geração — o LLM responde com contexto</span><i data-lucide="plus" class="icon"></i></div>
+      <div class="accordion-body"><p>Os trechos mais relevantes são enviados junto com a pergunta ao LLM, que gera uma resposta fundamentada nesses dados — reduzindo alucinações e permitindo respostas sobre dados privados ou recentes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="quiz">
+  <div class="section-head reveal">
+    <div class="eyebrow">Teste seus conhecimentos</div>
+    <h2>Quiz <span class="gradient-text">Interativo</span></h2>
+    <p>7 perguntas rápidas sobre tudo que você acabou de ver. Ganhe XP a cada acerto.</p>
+  </div>
+  <div class="card quiz-shell reveal" style="padding:36px;">
+    <div class="quiz-progress-row">
+      <span id="quizProgressLabel">Pergunta 1 de 7</span>
+      <span class="quiz-xp"><i data-lucide="sparkles" class="icon"></i> <span id="quizXp">0</span> XP</span>
+    </div>
+    <div class="quiz-bar-track"><div class="quiz-bar-fill" id="quizBar"></div></div>
+    <div id="quizBody"></div>
+  </div>
+</section>
+
+<section class="section" id="conclusao">
+  <div class="section-head reveal">
+    <div class="eyebrow">Fechamento</div>
+    <h2>De tabelas a <span class="gradient-text">vetores semânticos</span></h2>
+    <p>Bancos de dados evoluíram de simples arquivos organizados para sistemas capazes de entender significado — mas o princípio continua o mesmo: guardar informação de forma que ela possa ser encontrada rapidamente, quando for necessária.</p>
+  </div>
+  <div class="grid-3 reveal-stagger">
+    <div class="card"><div class="card-icon"><i data-lucide="table" class="icon" style="color:var(--blue);"></i></div><h4 style="margin-bottom:8px;">Relacional</h4><p style="color:var(--text-dim);font-size:.88rem;">Estrutura, integridade e décadas de maturidade — a base de praticamente todo sistema crítico.</p></div>
+    <div class="card"><div class="card-icon"><i data-lucide="network" class="icon" style="color:var(--cyan);"></i></div><h4 style="margin-bottom:8px;">NoSQL</h4><p style="color:var(--text-dim);font-size:.88rem;">Flexibilidade e escala horizontal para dados que mudam de forma constante.</p></div>
+    <div class="card"><div class="card-icon"><i data-lucide="brain" class="icon" style="color:var(--purple);"></i></div><h4 style="margin-bottom:8px;">Vetorial</h4><p style="color:var(--text-dim);font-size:.88rem;">A nova fronteira: dados organizados por significado, não apenas por valor exato.</p></div>
+  </div>
+</section>
+
+
+<section class="section" id="relacional">
+  <div class="section-head reveal">
+    <div class="eyebrow">Modelagem</div>
+    <h2>Banco de Dados <span class="gradient-text">Relacional</span></h2>
+    <p>O modelo relacional organiza dados em tabelas — como planilhas conectadas entre si por identificadores únicos.</p>
+  </div>
+  <div class="grid-3 reveal-stagger">
+    <div class="card"><h4 style="margin-bottom:8px;">Tabela</h4><p style="color:var(--text-dim);font-size:.9rem;">Uma coleção de dados sobre um mesmo assunto — ex: "clientes", "pedidos", "processos".</p></div>
+    <div class="card"><h4 style="margin-bottom:8px;">Chave Primária</h4><p style="color:var(--text-dim);font-size:.9rem;">Identifica de forma única cada linha de uma tabela — ex: o CPF de um cliente.</p></div>
+    <div class="card"><h4 style="margin-bottom:8px;">Chave Estrangeira</h4><p style="color:var(--text-dim);font-size:.9rem;">Aponta para a chave primária de outra tabela, criando o relacionamento entre elas.</p></div>
+  </div>
+  <div class="grid-3 reveal-stagger" style="margin-top:44px;">
+    <div class="card">
+      <div class="eyebrow">1 : 1</div>
+      <p style="color:var(--text-dim);font-size:.9rem;">Uma pessoa tem um único CPF, e um CPF pertence a uma única pessoa.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:22px;">
+        <div style="width:44px;height:44px;border-radius:11px;background:var(--grad-2);display:flex;align-items:center;justify-content:center;"><i data-lucide="user" style="color:#0B0F19;width:20px;height:20px;"></i></div>
+        <div style="width:24px;height:2px;background:var(--border-strong);"></div>
+        <div style="width:44px;height:44px;border-radius:11px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;"><i data-lucide="id-card" style="color:#fff;width:20px;height:20px;"></i></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">1 : N</div>
+      <p style="color:var(--text-dim);font-size:.9rem;">Um cliente pode ter vários pedidos, mas cada pedido pertence a um único cliente.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;">
+        <div style="width:44px;height:44px;border-radius:11px;background:var(--grad-2);display:flex;align-items:center;justify-content:center;"><i data-lucide="user" style="color:#0B0F19;width:20px;height:20px;"></i></div>
+        <div style="width:20px;height:2px;background:var(--border-strong);"></div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="width:36px;height:36px;border-radius:9px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;"><i data-lucide="package" style="color:#fff;width:16px;height:16px;"></i></div>
+          <div style="width:36px;height:36px;border-radius:9px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;"><i data-lucide="package" style="color:#fff;width:16px;height:16px;"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">N : N</div>
+      <p style="color:var(--text-dim);font-size:.9rem;">Um aluno cursa várias disciplinas, e cada disciplina tem vários alunos — resolvido com uma tabela intermediária.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;">
+        <div style="display:flex;flex-direction:column;gap:6px;"><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-2);display:flex;align-items:center;justify-content:center;"><i data-lucide="user" style="color:#0B0F19;width:14px;height:14px;"></i></div><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-2);display:flex;align-items:center;justify-content:center;"><i data-lucide="user" style="color:#0B0F19;width:14px;height:14px;"></i></div></div>
+        <div style="width:18px;height:2px;background:var(--border-strong);"></div>
+        <div style="width:36px;height:36px;border-radius:9px;background:var(--purple);display:flex;align-items:center;justify-content:center;"><i data-lucide="link" style="color:#fff;width:16px;height:16px;"></i></div>
+        <div style="width:18px;height:2px;background:var(--border-strong);"></div>
+        <div style="display:flex;flex-direction:column;gap:6px;"><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;"><i data-lucide="book-open" style="color:#fff;width:14px;height:14px;"></i></div><div style="width:32px;height:32px;border-radius:8px;background:var(--grad-1);display:flex;align-items:center;justify-content:center;"><i data-lucide="book-open" style="color:#fff;width:14px;height:14px;"></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="nao-relacional">
+  <div class="section-head reveal">
+    <div class="eyebrow">Modelagem</div>
+    <h2>Banco de Dados <span class="gradient-text">Não Relacional</span></h2>
+    <p>Bancos NoSQL abandonam a rigidez das tabelas para ganhar flexibilidade e escala horizontal.</p>
+  </div>
+  <div class="grid-2 reveal-stagger">
+    <div class="card"><h4 style="display:flex;align-items:center;gap:10px;"><i data-lucide="file-text" class="icon" style="color:var(--cyan);"></i> Documentos</h4><p style="color:var(--text-dim);font-size:.9rem;margin-top:8px;">Dados salvos como documentos JSON/BSON flexíveis. Ex: MongoDB. Ideal para catálogos com atributos variáveis.</p></div>
+    <div class="card"><h4 style="display:flex;align-items:center;gap:10px;"><i data-lucide="key" class="icon" style="color:var(--blue);"></i> Chave-Valor</h4><p style="color:var(--text-dim);font-size:.9rem;margin-top:8px;">Cada dado é acessado por uma chave única, como um dicionário gigante. Ex: Redis. Ideal para cache e sessões.</p></div>
+    <div class="card"><h4 style="display:flex;align-items:center;gap:10px;"><i data-lucide="columns-3" class="icon" style="color:var(--purple);"></i> Colunar</h4><p style="color:var(--text-dim);font-size:.9rem;margin-top:8px;">Dados organizados por colunas em vez de linhas. Ex: Cassandra. Ideal para grandes volumes analíticos e séries temporais.</p></div>
+    <div class="card"><h4 style="display:flex;align-items:center;gap:10px;"><i data-lucide="git-branch" class="icon" style="color:var(--cyan);"></i> Grafos</h4><p style="color:var(--text-dim);font-size:.9rem;margin-top:8px;">Dados como nós e conexões. Ex: Neo4j. Ideal para redes sociais e sistemas de recomendação.</p></div>
+  </div>
+  <div class="grid-2 reveal-stagger" style="margin-top:44px;">
+    <div class="card"><h4 style="color:#4ade80;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i data-lucide="check-circle" class="icon"></i> Quando usar NoSQL</h4><ul style="list-style:none;color:var(--text-dim);font-size:.9rem;"><li style="margin-bottom:9px;">O formato dos dados muda com frequência</li><li style="margin-bottom:9px;">Escala horizontal massiva é prioridade</li><li>Baixa latência de leitura é crítica (cache)</li></ul></div>
+    <div class="card"><h4 style="color:#f87171;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i data-lucide="x-circle" class="icon"></i> Quando evitar NoSQL</h4><ul style="list-style:none;color:var(--text-dim);font-size:.9rem;"><li style="margin-bottom:9px;">Relacionamentos complexos entre entidades</li><li style="margin-bottom:9px;">Transações financeiras que exigem consistência forte</li><li>Relatórios com muitos joins entre tabelas</li></ul></div>
+  </div>
+</section>
+
+<section class="section" id="bibliografia">
+  <div class="section-head reveal">
+    <div class="eyebrow">Referências</div>
+    <h2>Bibliografia</h2>
+    <p>Todas as informações apresentadas foram baseadas em documentação oficial e fontes primárias.</p>
+  </div>
+  <div class="biblio-grid reveal-stagger">
+    <div class="biblio-cat"><h4><i data-lucide="database" class="icon"></i> Banco de Dados / SQL</h4><ul>
+      <li><a href="https://en.wikipedia.org/wiki/Edgar_F._Codd" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> Edgar F. Codd — Modelo Relacional</a></li>
+      <li><a href="https://www.iso.org/standard/76583.html" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> ISO/IEC 9075 — Padrão SQL</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="database" class="icon"></i> PostgreSQL</h4><ul>
+      <li><a href="https://www.postgresql.org/about/" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> postgresql.org/about</a></li>
+      <li><a href="https://github.com/pgvector/pgvector" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> pgvector — busca vetorial no Postgres</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="database" class="icon"></i> MySQL</h4><ul>
+      <li><a href="https://www.mysql.com/about/" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> mysql.com/about</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="database" class="icon"></i> Oracle</h4><ul>
+      <li><a href="https://www.oracle.com/database/" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> oracle.com/database</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="server" class="icon"></i> SQL Server</h4><ul>
+      <li><a href="https://learn.microsoft.com/en-us/sql/sql-server/" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> learn.microsoft.com/sql-server</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="leaf" class="icon"></i> MongoDB</h4><ul>
+      <li><a href="https://www.mongodb.com/resources/basics/databases/nosql-explained" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> mongodb.com — NoSQL explicado</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="brain-circuit" class="icon"></i> Inteligência Artificial</h4><ul>
+      <li><a href="https://www.anthropic.com/" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> anthropic.com</a></li>
+    </ul></div>
+    <div class="biblio-cat"><h4><i data-lucide="move-3d" class="icon"></i> Vetorização</h4><ul>
+      <li><a href="https://platform.openai.com/docs/guides/embeddings" target="_blank" rel="noopener"><i data-lucide="arrow-up-right" class="icon"></i> Guia de Embeddings</a></li>
+    </ul></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-mark"><span class="mark"><i data-lucide="database" class="icon"></i></span> data.systems</div>
+  <p>Material técnico sobre Banco de Dados, SGBDs, SQL, Vetorização e Inteligência Artificial.</p>
+</footer>
+
+<div class="back-top" id="backTop" role="button" aria-label="Voltar ao topo"><i data-lucide="arrow-up" class="icon"></i></div>
+
+<script>
+(function() {
+  'use strict';
+
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  const on = (el, evt, fn, opts) => el && el.addEventListener(evt, fn, opts);
+  const raf = (fn) => requestAnimationFrame(fn);
+  
+  let iconsReady = false;
+  function initIcons() {
+    if (iconsReady || !window.lucide) return;
+    iconsReady = true;
+    lucide.createIcons();
+  }
+  
+  function waitForScripts() {
+    return new Promise((resolve) => {
+      const check = () => {
+        if (window.lucide) {
+          initIcons();
+          resolve();
+        } else {
+          setTimeout(check, 50);
+        }
+      };
+      check();
+    });
+  }
+
+  function initNav() {
+    const nav = $('#mainNav');
+    const toggle = $('#navToggle');
+    const links = $('#navLinks');
+    const backTop = $('#backTop');
+    
+    if (!nav || !toggle || !links) return;
+
+    let scrollTicking = false;
+    on(window, 'scroll', () => {
+      if (!scrollTicking) {
+        raf(() => {
+          const y = window.scrollY;
+          nav.classList.toggle('scrolled', y > 40);
+          if (backTop) backTop.classList.toggle('show', y > 800);
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+
+    on(toggle, 'click', () => links.classList.toggle('open'));
+    
+    $$('.nav-links a', links).forEach(a => {
+      on(a, 'click', () => links.classList.remove('open'));
+    });
+
+    if (backTop) {
+      on(backTop, 'click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+
+    if (window.innerWidth > 980) {
+      const pill = document.createElement('div');
+      pill.className = 'nav-pill';
+      links.appendChild(pill);
+      
+      const navAs = $$('.nav-links a', links);
+      const sections = $$('section[id]');
+      
+      function movePill(link) {
+        if (!link) return;
+        pill.style.left = link.offsetLeft + 'px';
+        pill.style.width = link.offsetWidth + 'px';
+      }
+
+      let sectionTicking = false;
+      on(window, 'scroll', () => {
+        if (!sectionTicking) {
+          raf(() => {
+            let cur = '';
+            sections.forEach(s => {
+              if (window.scrollY >= s.offsetTop - 140) cur = s.id;
+            });
+            
+            navAs.forEach(a => {
+              const isActive = a.getAttribute('href') === '#' + cur;
+              a.classList.toggle('active', isActive);
+              if (isActive) movePill(a);
+            });
+            sectionTicking = false;
+          });
+          sectionTicking = true;
+        }
+      }, { passive: true });
+
+      on(window, 'load', () => movePill(navAs[0]));
+      on(window, 'resize', () => {
+        const active = $('.nav-links a.active', links);
+        if (active) movePill(active);
+      });
+    }
+  }
+
+  function initReveal() {
+    const reveals = $$('.reveal, .reveal-stagger');
+    if (!reveals.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    setTimeout(() => {
+      reveals.forEach(el => el.classList.add('visible'));
+    }, 3500);
+  }
+
+  function initCounters() {
+    const counters = $$('.stat .num');
+    if (!counters.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = +el.dataset.target;
+          const suffix = el.dataset.suffix || '';
+          let cur = 0;
+          const step = Math.max(1, target / 60);
+          
+          const timer = setInterval(() => {
+            cur += step;
+            if (cur >= target) {
+              cur = target;
+              clearInterval(timer);
+            }
+            el.textContent = Math.floor(cur).toLocaleString('pt-BR') + suffix;
+          }, 20);
+          
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(c => observer.observe(c));
+  }
+
+  function initBars() {
+    const panels = $$('.sgbd-panel');
+    if (!panels.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.val + '%';
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    panels.forEach(p => observer.observe(p));
+  }
+
+  function initSGBDTabs() {
+    const tabs = $$('.sgbd-tab');
+    if (!tabs.length) return;
+
+    tabs.forEach(tab => {
+      on(tab, 'click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        $$('.sgbd-panel').forEach(p => p.classList.remove('active'));
+        
+        tab.classList.add('active');
+        const panel = $('#' + tab.dataset.target);
+        if (panel) {
+          panel.classList.add('active');
+          panel.querySelectorAll('.bar-fill').forEach(bar => {
+            bar.style.width = '0%';
+            raf(() => raf(() => {
+              bar.style.width = bar.dataset.val + '%';
+            }));
+          });
+        }
+      });
+    });
+  }
+
+  function initAccordion() {
+    const heads = $$('.accordion-head');
+    if (!heads.length) return;
+
+    heads.forEach(head => {
+      on(head, 'click', () => {
+        const item = head.parentElement;
+        const wasOpen = item.classList.contains('open');
+        
+        $$('.accordion-item', item.parentElement).forEach(i => {
+          i.classList.remove('open');
+          const body = i.querySelector('.accordion-body');
+          if (body) body.style.maxHeight = null;
+        });
+        
+        if (!wasOpen) {
+          item.classList.add('open');
+          const body = item.querySelector('.accordion-body');
+          if (body) body.style.maxHeight = body.scrollHeight + 40 + 'px';
+        }
+      });
+    });
+  }
+
+  function initSQLDemo() {
+    const examples = {
+      's-select': {
+        code: `<span class="tok-com">-- Buscar processos de um CPF específico</span>
+<span class="tok-kw">SELECT</span> id, numero_processo, status
+<span class="tok-kw">FROM</span> processos
+<span class="tok-kw">WHERE</span> cpf = <span class="tok-str">'123.456.789-00'</span>;`,
+        result: `<table class="res"><tr><th>id</th><th>numero_processo</th><th>status</th></tr>
+<tr><td>1</td><td>0001234-56.2024</td><td>Ativo</td></tr>
+<tr><td>2</td><td>0007890-12.2023</td><td>Arquivado</td></tr></table>`
+      },
+      's-insert': {
+        code: `<span class="tok-com">-- Cadastrar um novo processo</span>
+<span class="tok-kw">INSERT INTO</span> processos (cpf, numero_processo, status)
+<span class="tok-kw">VALUES</span> (<span class="tok-str">'123.456.789-00'</span>, <span class="tok-str">'0009999-11.2026'</span>, <span class="tok-str">'Ativo'</span>);`,
+        result: `<span style="color:#4ade80;">✓ 1 linha inserida com sucesso</span><br><span style="color:var(--text-dimmer);">id gerado: 3</span>`
+      },
+      's-update': {
+        code: `<span class="tok-com">-- Atualizar o status de um processo</span>
+<span class="tok-kw">UPDATE</span> processos
+<span class="tok-kw">SET</span> status = <span class="tok-str">'Arquivado'</span>
+<span class="tok-kw">WHERE</span> numero_processo = <span class="tok-str">'0001234-56.2024'</span>;`,
+        result: `<span style="color:#4ade80;">✓ 1 linha atualizada</span>`
+      },
+      's-delete': {
+        code: `<span class="tok-com">-- Remover um registro duplicado</span>
+<span class="tok-kw">DELETE FROM</span> processos
+<span class="tok-kw">WHERE</span> id = <span class="tok-num">3</span>;`,
+        result: `<span style="color:#f87171;">✓ 1 linha removida</span>`
+      },
+      's-join': {
+        code: `<span class="tok-com">-- Unir processos com as partes envolvidas</span>
+<span class="tok-kw">SELECT</span> p.numero_processo, pt.nome, pt.tipo
+<span class="tok-kw">FROM</span> processos p
+<span class="tok-kw">JOIN</span> partes pt <span class="tok-kw">ON</span> pt.processo_id = p.id;`,
+        result: `<table class="res"><tr><th>numero_processo</th><th>nome</th><th>tipo</th></tr>
+<tr><td>0001234-56.2024</td><td>João Silva</td><td>Autor</td></tr>
+<tr><td>0001234-56.2024</td><td>Estado de SP</td><td>Réu</td></tr></table>`
+      },
+      's-group': {
+        code: `<span class="tok-com">-- Contar processos por status</span>
+<span class="tok-kw">SELECT</span> status, <span class="tok-fn">COUNT</span>(*) <span class="tok-kw">AS</span> total
+<span class="tok-kw">FROM</span> processos
+<span class="tok-kw">GROUP BY</span> status;`,
+        result: `<table class="res"><tr><th>status</th><th>total</th></tr>
+<tr><td>Ativo</td><td>128</td></tr>
+<tr><td>Arquivado</td><td>452</td></tr></table>`
+      },
+      's-order': {
+        code: `<span class="tok-com">-- Listar os processos mais recentes primeiro</span>
+<span class="tok-kw">SELECT</span> numero_processo, data_criacao
+<span class="tok-kw">FROM</span> processos
+<span class="tok-kw">ORDER BY</span> data_criacao <span class="tok-kw">DESC</span>
+<span class="tok-kw">LIMIT</span> <span class="tok-num">3</span>;`,
+        result: `<table class="res"><tr><th>numero_processo</th><th>data_criacao</th></tr>
+<tr><td>0009999-11.2026</td><td>2026-07-01</td></tr>
+<tr><td>0004555-20.2026</td><td>2026-06-18</td></tr></table>`
+      }
+    };
+
+    const sqlBody = $('#sqlBody');
+    if (!sqlBody) return;
+
+    function render(key) {
+      const ex = examples[key];
+      if (!ex) return;
+      sqlBody.innerHTML = `<div class="ide-code">${ex.code}</div><div class="ide-result"><div class="ide-result-label"><i data-lucide="terminal" class="icon" style="width:12px;height:12px;"></i> Resultado</div>${ex.result}</div>`;
+      initIcons();
+    }
+
+    render('s-select');
+
+    $$('.sql-tab').forEach(tab => {
+      on(tab, 'click', () => {
+        $$('.sql-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        render(tab.dataset.target);
+      });
+    });
+  }
+
+  function initHeroParticles() {
+    const canvas = $('#hero-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    let running = true;
+    let rafId = null;
+
+    function resize() {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    }
+
+    function init() {
+      resize();
+      const density = w < 600 ? 40 : 26;
+      const count = Math.min(60, Math.floor(w / density));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
+        r: Math.random() * 1.4 + 0.6
+      }));
+    }
+
+    function tick() {
+      if (!running) return;
+      ctx.clearRect(0, 0, w, h);
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(91,140,255,.55)';
+        ctx.fill();
+      });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i], b = particles[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < 125) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(139,124,246,${(1 - d / 125) * 0.16})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    init();
+    
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        running = entry.isIntersecting;
+        if (running && !rafId) tick();
+      });
+    }, { threshold: 0 });
+
+    heroObserver.observe(canvas);
+    on(window, 'resize', () => {
+      resize();
+      init();
+    });
+  }
+
+  function initVectorSpace() {
+    const canvas = $('#vector-space');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const words = [
+      { t: 'gato', x: .30, y: .35, c: '#5B8CFF' },
+      { t: 'cachorro', x: .36, y: .42, c: '#5B8CFF' },
+      { t: 'pet', x: .33, y: .28, c: '#5B8CFF' },
+      { t: 'SQL', x: .68, y: .30, c: '#38D9C9' },
+      { t: 'banco de dados', x: .74, y: .38, c: '#38D9C9' },
+      { t: 'tabela', x: .66, y: .44, c: '#38D9C9' },
+      { t: 'praia', x: .20, y: .75, c: '#8B7CF6' },
+      { t: 'sol', x: .27, y: .80, c: '#8B7CF6' },
+      { t: 'IA', x: .72, y: .72, c: '#F3F4F7' },
+      { t: 'vetor', x: .80, y: .68, c: '#F3F4F7' },
+      { t: 'embedding', x: .78, y: .78, c: '#F3F4F7' }
+    ];
+
+    function draw() {
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      
+      const grad = ctx.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, w / 2);
+      grad.addColorStop(0, 'rgba(91,140,255,.05)');
+      grad.addColorStop(1, 'rgba(11,15,25,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      words.forEach(a => {
+        words.forEach(b => {
+          if (a === b) return;
+          const dx = (a.x - b.x) * w, dy = (a.y - b.y) * h;
+          const d = Math.hypot(dx, dy);
+          if (d < 130 && a.c === b.c) {
+            ctx.beginPath();
+            ctx.moveTo(a.x * w, a.y * h);
+            ctx.lineTo(b.x * w, b.y * h);
+            ctx.strokeStyle = 'rgba(255,255,255,.07)';
+            ctx.stroke();
+          }
+        });
+      });
+
+      words.forEach(pt => {
+        ctx.beginPath();
+        ctx.arc(pt.x * w, pt.y * h, 5, 0, Math.PI * 2);
+        ctx.fillStyle = pt.c;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = pt.c;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        ctx.font = '12px Inter';
+        ctx.fillStyle = '#F3F4F7';
+        ctx.fillText(pt.t, pt.x * w + 9, pt.y * h + 4);
+      });
+    }
+
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = 360;
+      draw();
+    }
+
+    const vectorObserver = new IntersectionObserver((entries) => {
+      if (entries[0] && entries[0].isIntersecting) {
+        resize();
+      }
+    }, { threshold: 0.3 });
+
+    vectorObserver.observe(canvas);
+    on(window, 'resize', resize);
+    resize();
+  }
+
+  function initQuiz() {
+    const questions = [
+      { q: 'Qual comando SQL é usado para buscar dados de uma tabela?', opts: ['SELECT', 'FETCH', 'GET', 'OPEN'], correct: 0, explain: 'SELECT é o comando responsável por consultar e retornar dados de uma ou mais tabelas.' },
+      { q: 'O que significa a sigla ACID em bancos relacionais?', opts: ['Access, Control, Index, Data', 'Atomicidade, Consistência, Isolamento, Durabilidade', 'Array, Cache, Index, Data', 'Nenhuma das anteriores'], correct: 1, explain: 'ACID garante que cada transação seja processada de forma confiável, mesmo em caso de falhas.' },
+      { q: 'Qual SGBD é famoso por ser orientado a documentos (NoSQL)?', opts: ['Oracle', 'SQL Server', 'MongoDB', 'PostgreSQL'], correct: 2, explain: 'O MongoDB armazena dados como documentos flexíveis no formato BSON, em vez de tabelas rígidas.' },
+      { q: 'Em uma relação 1:N, o que representa o "N"?', opts: ['Um registro único', 'Vários registros relacionados a um único registro', 'Nenhum relacionamento', 'Uma chave estrangeira nula'], correct: 1, explain: 'Em 1:N, um único registro pode se relacionar com vários outros — como um cliente e seus vários pedidos.' },
+      { q: 'O que é um embedding, no contexto de IA?', opts: ['Um tipo de índice SQL', 'Uma senha criptografada', 'Uma representação numérica de significado', 'Um comando de backup'], correct: 2, explain: 'Um embedding transforma texto (ou imagem) em um vetor de números que representa seu significado.' },
+      { q: 'Qual cláusula SQL agrupa linhas para agregações como COUNT()?', opts: ['ORDER BY', 'GROUP BY', 'WHERE', 'JOIN'], correct: 1, explain: 'GROUP BY agrupa linhas com valores iguais, permitindo aplicar funções como COUNT, SUM e AVG.' },
+      { q: 'O que é RAG (Retrieval-Augmented Generation)?', opts: ['Um tipo de banco relacional', 'Buscar dados relevantes antes de gerar uma resposta com LLM', 'Um algoritmo de criptografia', 'Um formato de imagem'], correct: 1, explain: 'RAG busca informações relevantes num banco vetorial antes de gerar a resposta com um LLM.' }
+    ];
+
+    let current = 0, xp = 0, answered = false, streak = 0;
+    const body = $('#quizBody');
+    const bar = $('#quizBar');
+    const label = $('#quizProgressLabel');
+    const xpEl = $('#quizXp');
+    if (!body || !bar || !label || !xpEl) return;
+
+    function renderQuestion() {
+      answered = false;
+      const item = questions[current];
+      label.textContent = `Pergunta ${current + 1} de ${questions.length}`;
+      bar.style.width = (current / questions.length * 100) + '%';
+      
+      const letters = ['A', 'B', 'C', 'D'];
+      body.innerHTML = `<h4 style="margin-bottom:20px;font-size:1.15rem;">${item.q}</h4>` +
+        item.opts.map((opt, i) => `<div class="quiz-option" data-i="${i}" role="button" tabindex="0"><span class="letter">${letters[i]}</span><span>${opt}</span><i data-lucide="check" class="icon quiz-mark quiz-mark-correct"></i><i data-lucide="x" class="icon quiz-mark quiz-mark-wrong"></i></div>`).join('') +
+        `<div id="quizFeedback"></div><div id="quizActions" class="quiz-actions"></div>`;
+      
+      initIcons();
+
+      function selectOption(opt) {
+        if (answered) return;
+        answered = true;
+        const i = +opt.dataset.i;
+        const options = body.querySelectorAll('.quiz-option');
+        options.forEach(o => o.classList.add('locked'));
+        
+        let gained = 0;
+        if (i === item.correct) {
+          opt.classList.add('correct');
+          streak++;
+          gained = streak >= 3 ? 20 : 15;
+          xp += gained;
+        } else {
+          opt.classList.add('wrong');
+          options[item.correct].classList.add('correct');
+          streak = 0;
+        }
+        
+        xpEl.textContent = xp;
+        
+        const feedback = $('#quizFeedback');
+        if (feedback) {
+          feedback.innerHTML = `<div class="quiz-explain ${i === item.correct ? 'is-correct' : 'is-wrong'}">
+            <i data-lucide="${i === item.correct ? 'sparkles' : 'lightbulb'}" class="icon"></i>
+            <div><strong>${i === item.correct ? `Certo! +${gained} XP` + (streak >= 3 ? ' 🔥 combo' : '') : 'Não foi essa.'}</strong><p>${item.explain}</p></div>
+          </div>`;
+          initIcons();
+        }
+
+        const isLast = current === questions.length - 1;
+        const actions = $('#quizActions');
+        if (actions) {
+          actions.innerHTML = `<button class="btn btn-primary" id="quizNext">${isLast ? 'Ver resultado' : 'Próxima pergunta'} <i data-lucide="arrow-right" class="icon"></i></button>`;
+          initIcons();
+          
+          const nextBtn = $('#quizNext');
+          if (nextBtn) {
+            on(nextBtn, 'click', () => {
+              current++;
+              if (current < questions.length) renderQuestion();
+              else renderResult();
+            });
+          }
+        }
+      }
+
+      $$('.quiz-option', body).forEach(opt => {
+        on(opt, 'click', () => selectOption(opt));
+        on(opt, 'keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectOption(opt);
+          }
+        });
+      });
+    }
+
+    function renderResult() {
+      bar.style.width = '100%';
+      label.textContent = 'Quiz concluído';
+      const pct = Math.round((xp / (questions.length * 20)) * 100);
+      const msg = pct >= 80 ? 'Domínio de especialista.' : pct >= 50 ? 'Boa base — vale revisar alguns pontos.' : 'Bom começo — releia as seções acima e tente novamente.';
+      
+      body.innerHTML = `<div class="quiz-result">
+        <div class="score">${xp} XP</div>
+        <p style="color:var(--text-dim);margin:14px 0 6px;">Quiz finalizado.</p>
+        <p style="color:var(--text-dimmer);font-size:.85rem;margin-bottom:26px;">${msg}</p>
+        <button class="btn btn-primary" id="quizRestart"><i data-lucide="rotate-ccw" class="icon"></i> Refazer Quiz</button>
+      </div>`;
+      initIcons();
+      
+      const restartBtn = $('#quizRestart');
+      if (restartBtn) {
+        on(restartBtn, 'click', () => {
+          current = 0;
+          xp = 0;
+          streak = 0;
+          xpEl.textContent = '0';
+          renderQuestion();
+        });
+      }
+    }
+
+    renderQuestion();
+  }
+
+  function initButtons() {
+    $$('.btn').forEach(btn => {
+      on(btn, 'mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        btn.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        btn.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+    });
+  }
+
+  waitForScripts().then(() => {
+    initNav();
+    initReveal();
+    initCounters();
+    initBars();
+    initSGBDTabs();
+    initAccordion();
+    initSQLDemo();
+    initHeroParticles();
+    initVectorSpace();
+    initButtons();
+    initQuiz();
+  });
+
+})();
+</script>
+</body>
+</html>
